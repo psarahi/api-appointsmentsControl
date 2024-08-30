@@ -10,6 +10,7 @@ let server = http.createServer(app);
 const inicio = require('./routers/inicio');
 const perfil = require('./routers/perfil');
 const usuario = require('./routers/usuario');
+const cliente = require('./routers/cliente');
 
 app.use(express.json());
 
@@ -24,6 +25,7 @@ app.use(function(req, res, next) {
 app.use('', inicio);
 app.use('/api/perfil', perfil);
 app.use('/api/usuario', usuario);
+app.use('/api/cliente', cliente);
 
 const port = process.env.PORT || 3003;
 
