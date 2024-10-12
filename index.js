@@ -8,9 +8,13 @@ const app = express();
 let server = http.createServer(app);
 
 const inicio = require('./routers/inicio');
-const perfil = require('./routers/perfil');
+const sucursal = require('./routers/sucursales');
 const usuario = require('./routers/usuario');
-const cliente = require('./routers/cliente');
+const paciente = require('./routers/paciente');
+const expedientes = require('./routers/expedientes');
+const inventario = require('./routers/inventario');
+const optometrista = require('./routers/optometrista');
+const detalleVentas = require('./routers/detalleVenta');
 
 app.use(express.json());
 
@@ -23,9 +27,13 @@ app.use(function(req, res, next) {
 });
 
 app.use('', inicio);
-app.use('/api/perfil', perfil);
+app.use('/api/sucursal', sucursal);
 app.use('/api/usuario', usuario);
-app.use('/api/cliente', cliente);
+app.use('/api/paciente', paciente);
+app.use('/api/expediente', expedientes);
+app.use('/api/inventario', inventario);
+app.use('/api/optometrista', optometrista);
+app.use('/api/detalleVentas', detalleVentas);
 
 const port = process.env.PORT || 3003;
 

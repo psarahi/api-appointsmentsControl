@@ -1,23 +1,13 @@
-const mongosee = require('mongoose');
+const mongoose = require('mongoose');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
 moment.locale('es');
 
-const usuarioSchema = new mongosee.Schema({
+const usuarioSchema = new mongoose.Schema({
 
     nombre: {
         type: String,
         required: true
-    },
-    apellido: {
-        type: String,
-        required: true
-    },
-    correo: {
-        type: String,
-        trim: true,
-        required: true,
-        unique: true
     },
     usuario: {
         type: String,
@@ -30,21 +20,14 @@ const usuarioSchema = new mongosee.Schema({
         trim: true,
         required: true
     },
-    empresa: {
-        type: String
-    },
-    lugar: {
-        type: String,
-        required: true
+    sucursales: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'sucursales',
+        required: true 
     },
     fechaRegistro: {
         type: Date,
         default: moment().format("YYYY-MM-DD HH:mm:ss")
-    },
-    perfiles: {
-        type: mongosee.Schema.Types.ObjectId,
-        ref: 'perfiles',
-        required: true
     },
     estado: {
         type: Boolean,
@@ -52,22 +35,7 @@ const usuarioSchema = new mongosee.Schema({
     }
 });
 
-usuarioSchema.methods.generarJWT = () => {
-
-    return jwt.sign({
-        id: this._id,
-        nombre: this.nombre,
-        apellido: this.apellido,
-        usuario: this.usuario,
-        idCuenta: this._id,
-        fecha: this.fechaRegistro,
-        perfil: this.perfiles,
-        token: '',
-        menu: obtenerMenu(this.perfiles)
-    }, process.env.KEY_API_JWT);
-};
-
-const Usuario = mongosee.model('usuarios', usuarioSchema);
+const Usuario = mongoose.model('usuarios', usuarioSchema);
 
 function obtenerMenu(perfil) {
     console.log(perfil, 'Perfil');
