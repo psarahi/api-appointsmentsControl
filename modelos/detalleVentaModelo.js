@@ -11,17 +11,21 @@ const detalleVenta = new mongoose.Schema({
     type: String,
   },
   proteccion: {
-    type: String,
-  },
+    type:[String]
+    },
   material: {
     type: String,
   },
-  modaArmazon: {
+  moda: {
     type: String,
   },
-  pacientes: {
+  paciente: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "pacientes",
+    ref: "paciente",
+  },
+  sucursales: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "sucursales",
   },
   detalleInventario: [
     {
@@ -33,14 +37,10 @@ const detalleVenta = new mongoose.Schema({
         type: Number,
         required: true,
       },
-      precioVendido: {
-        type: Number,
-        required: true,
-      },
       descuento: {
         type: Number,
         default: 0,
-      },
+      }
     },
   ],
 
@@ -52,29 +52,27 @@ const detalleVenta = new mongoose.Schema({
     type: Date,
     default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
   },
-  detallePagos: [{
-    fecha: {
-      type: Date,
-      default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+  detallePagos: [
+    {
+      fecha: {
+        type: Date,
+        default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+      },
+      formaPago: {
+        type: String,
+        required: true,
+      },
+      monto: {
+        type: Number,
+        required: true,
+      },
     },
-    formaPago: {
-      type: String,
-      required: true,
-    },
-    monto: {
-      type: Number,
-      required: true,
-    },
-  }],
+  ],
   descuentoTotal: {
     type: Number,
     default: 0,
   },
   cantPagos: {
-    type: Number,
-    default: 0,
-  },
-  montoPagos: {
     type: Number,
     default: 0,
   },
