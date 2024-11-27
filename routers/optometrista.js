@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', async(req, res) => {
     try {
         const optometristas = await Optometrista.find()
-        .populate("sucursales", "nombre");
+        .populate('sucursales', 'nombre');
 
         res.send(optometristas);
     } catch (error) {
@@ -16,19 +16,19 @@ router.get('/', async(req, res) => {
 });
 
 // Funcion para agregar
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
     try {
       const optometrista = new Optometrista(req.body);
       const result = await optometrista.save();
       res.status(201).send(result);
     } catch (error) {
       console.log(error);
-      res.status(404).send("No se pudo registrar el documento");
+      res.status(404).send('No se pudo registrar el documento');
     }
   });
 
   // Funcion PUT
-router.put("/:_id", async (req, res) => {
+router.put('/:_id', async (req, res) => {
     try {
       //66cce95ffe40b42d2b69260e
       const optometrista = await Optometrista.findByIdAndUpdate(req.params._id, req.body, {
@@ -37,31 +37,31 @@ router.put("/:_id", async (req, res) => {
       res.status(202).send(optometrista);
     } catch (error) {
       console.log(error);
-      res.status(404).send("No se encontro ningun documento");
+      res.status(404).send('No se encontro ningun documento');
     }
   });
 
   // Funcion DELETE
-router.delete("/:_id", async (req, res) => {
+router.delete('/:_id', async (req, res) => {
     try {
       if (req.params._id.length != 24) {
         return res
           .status(404)
-          .send("El id no contiene el numero correcto de digitos");
+          .send('El id no contiene el numero correcto de digitos');
       }
       const optometrista = await Optometrista.findById(req.params._id);
   
       if (!optometrista) {
         return res
           .status(404)
-          .send("No se encontro ningun documento para borrar");
+          .send('No se encontro ningun documento para borrar');
       }
       await Optometrista.findByIdAndDelete(req.params._id);
   
-      res.status(200).send("Registro borrado");
+      res.status(200).send('Registro borrado');
     } catch (error) {
       console.log(error);
-      res.status(404).send("No se encontro ningun documento");
+      res.status(404).send('No se encontro ningun documento');
     }
   });
   

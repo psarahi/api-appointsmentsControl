@@ -1,6 +1,6 @@
 const express = require("express");
 const DetalleVenta = require("../modelos/detalleVentaModelo");
-
+const moment = require("moment");
 const router = express.Router();
 
 // Funcion get todos
@@ -27,6 +27,99 @@ router.get("/", async (req, res) => {
     res.status(404).send("No se encontro ningun documento");
   }
 });
+
+// Funcion get todos
+router.get(
+  "/detalleInventario/:sucursal/:fechaInicial/:fechaFinal",
+  async (req, res) => {
+    try {
+      let invExistente = [];
+      let invPedido = [];
+
+      const detalles = await DetalleVenta.find({
+        $and: [
+          {
+            sucursales: { $eq: req.params.sucursal },
+            fecha: {
+              $gt: moment(req.params.fechaInicial)
+                .subtract(1, "day")
+                .startOf("day"),
+              $lte: moment(req.params.fechaFinal),
+            },
+          },
+        ],
+      })
+        .populate([
+          {
+            path: "detalleInventario.inventario",
+          },
+        ])
+        .sort({ fecha: -1 });
+
+      detalles.forEach((detalle) => {
+        detalle.detalleInventario.forEach((detalleInventario) => {
+          if (detalleInventario.cantidad > 0) {
+            invExistente.push({
+              descripcion: detalleInventario.inventario.descripcion,
+              esfera: detalleInventario.inventario.esfera,
+              cilindro: detalleInventario.inventario.cilindro,
+              adicion: detalleInventario.inventario.adicion,
+              tipoVenta: detalle.tipoVenta,
+              fecha: moment(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
+              cantidad: detalleInventario.cantidad,
+              linea: detalleInventario.inventario.linea,
+              // precioVenta: detalleInventario.inventario.precioVenta,
+              // precioCompra: detalleInventario.inventario.precioCompra,
+              // existencia: detalleInventario.inventario.existencia,
+              importe: detalleInventario.inventario.importe,
+              valorGravado: detalleInventario.inventario.valorGravado,
+              // categoria: detalleInventario.inventario.categoria,
+              proveedor: detalleInventario.inventario.proveedor,
+              // telefono: detalleInventario.inventario.telefono,
+              moda: detalleInventario.inventario.moda,
+              material: detalleInventario.inventario.material,
+              diseno: detalleInventario.inventario.diseno,
+              color: detalleInventario.inventario.color,
+            });
+          } else {
+            invPedido.push({
+              descripcion: detalleInventario.inventario.descripcion,
+              esfera: detalleInventario.inventario.esfera,
+              cilindro: detalleInventario.inventario.cilindro,
+              adicion: detalleInventario.inventario.adicion,
+              tipoVenta: detalle.tipoVenta,
+              fecha: moment(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
+              cantidad: detalleInventario.cantidad,
+              linea: detalleInventario.inventario.linea,
+              // precioVenta: detalleInventario.inventario.precioVenta,
+              // precioCompra: detalleInventario.inventario.precioCompra,
+              // existencia: detalleInventario.inventario.existencia,
+              importe: detalleInventario.inventario.importe,
+              valorGravado: detalleInventario.inventario.valorGravado,
+              // categoria: detalleInventario.inventario.categoria,
+              proveedor: detalleInventario.inventario.proveedor,
+              // telefono: detalleInventario.inventario.telefono,
+              moda: detalleInventario.inventario.moda,
+              material: detalleInventario.inventario.material,
+              diseno: detalleInventario.inventario.diseno,
+              color: detalleInventario.inventario.color,
+            });
+          }
+        });
+      });
+
+      const datoInventario = {
+        invExistente,
+        invPedido,
+      };
+
+      res.status(200).send(datoInventario);
+    } catch (error) {
+      console.log(error);
+      res.status(404).send("No se encontro ningun documento");
+    }
+  }
+);
 
 // Funcion get por paciente
 router.get("/pacientes", async (req, res) => {
@@ -66,7 +159,7 @@ router.get("/idPaciente/:idPaciente", async (req, res) => {
     }).populate([
       {
         path: "detalleInventario.inventario",
-        select: "descripcion precioVenta precioCompra moda",
+        //select: 'descripcion precioVenta precioCompra moda',
       },
       {
         path: "paciente",
@@ -142,16 +235,16 @@ router.put("/:_id", async (req, res) => {
 // Funcion PUT por detalle de pago
 router.put("/detallePago/:_id", async (req, res) => {
   try {
-    const detalle = await DetalleVenta.findById(req.params._id);
     const detalleSave = await DetalleVenta.findByIdAndUpdate(
       req.params._id,
       {
         $push: {
           detallePagos: req.body.detallePago,
         },
-        $inc:{
-          acuenta: req.body.detallePago.monto
-        }
+        $inc: {
+          acuenta: req.body.detallePago.monto,
+        },
+        numFacRec: req.body.numFacRec,
       },
       {
         new: true,

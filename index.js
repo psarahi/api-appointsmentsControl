@@ -15,6 +15,8 @@ const expedientes = require('./routers/expedientes');
 const inventario = require('./routers/inventario');
 const optometrista = require('./routers/optometrista');
 const detalleVentas = require('./routers/detalleVenta');
+const facturas = require('./routers/facturas');
+const correlativos = require('./routers/correlativoRecibos');
 
 app.use(express.json());
 
@@ -34,8 +36,12 @@ app.use('/api/expediente', expedientes);
 app.use('/api/inventario', inventario);
 app.use('/api/optometrista', optometrista);
 app.use('/api/detalleVentas', detalleVentas);
+app.use('/api/facturas', facturas);
+app.use('/api/correlativo', correlativos);
 
 const port = process.env.PORT || 3003;
+
+// docker run --env-file=./.env -p 3002:3002  apicontrolteatro:latest 
 
 server.listen(port, () => console.log('Escuchando Puerto: ' + port));
 

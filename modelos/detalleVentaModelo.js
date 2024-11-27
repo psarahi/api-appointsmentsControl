@@ -37,13 +37,12 @@ const detalleVenta = new mongoose.Schema({
         type: Number,
         required: true,
       },
-      descuento: {
-        type: Number,
-        default: 0,
-      }
+      // descuento: {
+      //   type: Number,
+      //   default: 0,
+      // }
     },
   ],
-
   fecha: {
     type: Date,
     default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
@@ -83,6 +82,13 @@ const detalleVenta = new mongoose.Schema({
   acuenta: {
     type: Number,
     default: 0,
+  },
+  numFacRec: {
+    type: String,
+  },
+  entregado: {
+    type: Boolean,
+    default: false,
   },
 });
 
