@@ -11,8 +11,23 @@ const sucursalesShema = new  mongoose.Schema({
     },
     telefono: {
         type: String,
-        required: true
-    }
+    },
+    celular: {
+        type: String,
+    },
+    email: {
+        type: String,
+    },
+    cai: {
+        type: String,
+    },
+    paginaDigital: {
+        type: String,
+    },
+    rtn: {
+        type: String,
+    },
+    
 });
 
 const Sucursales = mongoose.model('sucursales', sucursalesShema);

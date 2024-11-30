@@ -12,11 +12,23 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "conversor-numero-a-letras-es-ar": "^1.0.3",
+    "date-fns": "^3.6.0",
+    "dayjs": "^1.11.13",
+    "escpos": "^3.0.0-alpha.6",
+    "escpos-usb": "^3.0.0-alpha.4",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
+    "fs": "^0.0.1-security",
+    "html-to-text": "^9.0.5",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
     "mongodb": "^6.8.0",
-    "mongoose": "^8.5.2"
+    "mongoose": "^8.5.2",
+    "node-thermal-printer": "^4.4.2",
+    "path": "^0.12.7",
+    "printers": "^1.0.2",
+    "sharp": "^0.33.5",
+    "usb": "^1.9.2"
   }
 }

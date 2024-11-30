@@ -8,6 +8,12 @@ const expedientesShema = mongoose.Schema({
     ref: "paciente",
     required: true,
   },
+  tipoLente: {
+    type: String,
+  },
+  proteccion: {
+    type: [String],
+  },
   optometrista: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "optometrista",
@@ -81,6 +87,6 @@ const expedientesShema = mongoose.Schema({
   },
 });
 
-const Expediente = mongoose.model('expediente', expedientesShema);
+const Expediente = mongoose.model("expediente", expedientesShema);
 
 module.exports = Expediente;

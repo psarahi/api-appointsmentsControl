@@ -2,6 +2,99 @@ const express = require("express");
 const Facturas = require("../modelos/FacturasModelo");
 const Correlativo = require("../modelos/CorrelativosModelo");
 
+const escpos = require("escpos");
+escpos.USB = require("escpos-usb");
+const htmlToText = require("html-to-text");
+const sharp = require("sharp");
+const path = require("path");
+const dayjs = require("dayjs");
+const fs = require('fs');
+const conversor = require("conversor-numero-a-letras-es-ar");
+let ClaseConversor = conversor.conversorNumerosALetras;
+let miConversor = new ClaseConversor();
+
+const articulos = [
+  {
+    cantidad: 1,
+    descripcion: "Lentes monofocales",
+    monto: 1568.0,
+  },
+  {
+    cantidad: 1,
+    descripcion: "Lentes trifocales para sol",
+    monto: 2280.0,
+  },
+  {
+    cantidad: 1,
+    descripcion: "Lentes presionados",
+    monto: 2500.0,
+  },
+];
+
+const table = `
+<!doctype html>
+    <html>
+        <head>
+            <meta charset='utf-8'>
+            <link href='styles/style.css' rel='stylesheet' type='text/css' />        
+        </head>   
+        <body>
+            <div class='invoice-box'>
+                <table style='width:100%' class='receipt-table' border='0'>
+                    <thead>
+                        <tr class='heading'>
+                            <th>Cantidad</th>
+                            <th>Descripcion</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${articulos.map(
+                          (item) =>
+                            `
+                                <tr>
+                                    <td>${item.cantidad}</td>
+                                    <td>${item.descripcion}</td>
+                                    <td>${item.monto.toFixed(2)}</td>
+                                </tr>
+                            `
+                        )}
+                    </tbody>
+            </table>
+            </div>            
+        </body>     
+    </html>
+`;
+
+const imagen = `
+<!doctype html>
+    <html>
+        <head>
+            <meta charset='utf-8'>
+            <link href='styles/style.css' rel='stylesheet' type='text/css' />        
+        </head>   
+        <body>
+            <div>
+            <img src='/logoOptica.png' alt='Logo' >
+            </div>
+        </body>     
+    </html>
+`;
+
+const textHtml = htmlToText.convert(table, {
+  wordwrap: false,
+  tables: [".receipt-box", ".receipt-table"],
+});
+
+//const device = new escpos.USB();
+
+//const printer = new escpos.Printer(device);
+const resizeImage = async (inputPath, outputPath) => {
+  await sharp(inputPath)
+    .resize({width: 300}) // Match printer width
+    .toFile(outputPath)
+};
+
 const router = express.Router();
 
 // Funcion get todos
@@ -11,6 +104,113 @@ router.get("/", async (req, res) => {
       .populate("sucursales")
       .sort({ fechaLimiteEmision: -1 });
     res.send(factura);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("No se encontro ningun documento");
+  }
+});
+
+// Funcion para imprimir
+router.get("/imprimirFactura", async (req, res) => {
+  try {
+    const fac = await Facturas.find({
+      $and: [
+        {
+          sucursales: {
+            $eq: req.body.sucursal,
+          },
+          estado: true,
+        },
+      ],
+    }).populate("sucursales");
+
+    console.log(fac);
+
+    const cai = fac[0].sucursales.cai;
+    const rango = `${fac[0].desde} - ${fac[0].hasta}`;
+    const rtn = fac[0].sucursales.rtn;
+    const tel = fac[0].sucursales.telefono;
+    const cel = fac[0].sucursales.celular;
+    const direccion = fac[0].sucursales.direccion;
+    const email = fac[0].sucursales.email;
+    const factura = req.body.numFacRec;
+    const fechaEmision = fac[0].fechaLimiteEmision;
+    device.open(function (error) {
+      if (error) {
+        console.error("Error al abrir el dispositivo:", error);
+        return;
+      }
+
+      resizeImage("logoOptica.png", "output.png").then(() => {
+        device.open(() => {
+          if (error) {
+            console.error("Error al abrir el dispositivo:", error);
+            return;
+          }
+          escpos.Image.load(path.resolve("output.png"), (image) => {
+            printer
+              .align("ct")
+              .raster(image)
+              .font("a")
+              //.align("ct")
+              //.style('bu')
+              .encode("utf8")
+              .size(0, 0)
+              .text("Con vision de servicio")
+              // .text(`RTN ${rtn}`)
+              // .text(`Tel: ${tel} / Cel: ${cel}`)
+              // .text(`Direccion ${direccion}`)
+              // .text(`Email ${email}`)
+              // .text("")
+              // .align("LT")
+              // .text(`#Factura: ${factura}`)
+              // .text(`Fecha: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+              // .text("Cliente: 0 - Optica y laboratorio Echeverria")
+              // .text(`Vendedor: General`)
+              // .text(`Terminos: Contado`)
+              // .text(`Estado: Pagado`)
+              // .text("")
+              // .drawLine()
+              // .text(textHtml)
+              // .drawLine()
+              // .align("RT")
+              // .text("Descuento y rebajas L 230.00")
+              // .text("Sub Total L 1,568.00")
+              // .text("Importe Exento L 0.00")
+              // .text("Importe Grabado L 1,568.00")
+              // .text("Importe Exento 15% L 0.00")
+              // .text("Importe Grabado 18% L 1,568.00")
+              // .text("15% I.S.V. L 235.00")
+              // .text("18% I.S.V. L 235.00")
+              // .text("Total a pagar L 1,803.00")
+              // .text("Forma de pago")
+              // .text("Tajeta de credito L 1,803.00")
+              // .text("")
+              // .align("ct")
+              // .text(miConversor.convertToText(1803.0).toLocaleUpperCase())
+              // .align("lt")
+              // .text(`CAI: ${cai}`)
+              // .text(`Rango autorizado: ${rango}`)
+              // .text(
+              //   `Fecha limite emision : ${dayjs(fechaEmision)
+              //     .add(6, "hour")
+              //     .format("YYYY-MM-DD")}`
+              // )
+              // .text("")
+              // .align("ct")
+              // .text("La factura es beneficio de todos, exijala")
+              // .text("No se hacen devoluciones")
+              // .text("")
+              // .text("")
+              .beep(1, 100)
+              .cut()
+              .close();
+          });
+        });
+      });
+    });
+
+    res.send("print");
   } catch (error) {
     console.log(error);
     res.status(404).send("No se encontro ningun documento");

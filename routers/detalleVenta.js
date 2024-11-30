@@ -124,14 +124,18 @@ router.get(
 // Funcion get por paciente
 router.get("/pacientes", async (req, res) => {
   try {
+    let ventaPaciente = [];
     const detalles = await DetalleVenta.find()
-      .select("paciente")
+      //.select("paciente")
       .populate([
         {
           path: "paciente",
           select: "nombre id",
         },
-      ]);
+      ])
+      .sort({ fecha: -1 });
+
+    //console.log(detalles);
 
     const pacientes = detalles.filter(
       (value, index, self) =>
@@ -141,10 +145,23 @@ router.get("/pacientes", async (req, res) => {
         })
     );
 
+    pacientes.forEach((p) => {
+      const venta = detalles.filter((d) => d.paciente._id === p.paciente._id);
+
+      ventaPaciente.push({
+        idPaciente: p.paciente._id,
+        paciente: p.paciente.nombre,
+        acuenta: venta[0].acuenta,
+        total: venta[0].total,
+      });
+    });
+
+    console.log(ventaPaciente);
+
     // const pacientes = detalles.map((p) => p.paciente.nombre);
     // const uniquesPacientes = [...new Set(pacientes)];
 
-    res.status(200).send(pacientes);
+    res.status(200).send(ventaPaciente);
   } catch (error) {
     console.log(error);
     res.status(404).send("No se encontro ningun documento");

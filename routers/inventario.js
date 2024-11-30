@@ -28,6 +28,25 @@ router.get('/bySucursal/:sucursal', async (req, res) => {
   }
 });
 
+// Funcion get by sucursal
+router.get('/activos/:sucursal', async (req, res) => {
+  try {
+    const inventario = await Inventario.find({
+      $and: [{
+        sucursales: {
+          $eq: req.params.sucursal,
+        },
+        estado: true,
+      }]
+   
+    });
+    res.send(inventario);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send('No se encontro ningun documento');
+  }
+});
+
 // Funcion get todos
 router.get('/inventarioExistente', async (req, res) => {
   try {
