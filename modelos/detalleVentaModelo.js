@@ -23,6 +23,12 @@ const detalleVenta = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "paciente",
   },
+  rtn: {
+    type: String,
+  },
+  nombreRtn: {
+    type: String,
+  },
   sucursales: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "sucursales",
