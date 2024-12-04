@@ -89,7 +89,7 @@ router.post('/login', async (req, res) => {
     const token = await generarJWT(usuarioFind.id, usuarioFind.name);
     let payload = jwt.verify(token, process.env.SECRET_JWT);
     payload.token = token;
-    payload.nombre= usuarioFind.nombre;;
+    payload.nombre= usuarioFind.nombre;
 
     res.status(201).header('authorization', token).send(payload);
 

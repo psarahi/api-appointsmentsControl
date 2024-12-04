@@ -71,6 +71,10 @@ const detalleVenta = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      usuarios: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "usuarios",
+      },
     },
   ],
   descuentoTotal: {

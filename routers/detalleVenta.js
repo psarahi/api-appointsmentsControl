@@ -12,6 +12,9 @@ router.get("/", async (req, res) => {
         select: "descripcion precioVenta precioCompra moda",
       },
       {
+        path: "detallePagos.usuarios",
+      },
+      {
         path: "paciente",
         select: "nombre",
       },
@@ -52,6 +55,9 @@ router.get(
         .populate([
           {
             path: "detalleInventario.inventario",
+          },
+          {
+            path: "detallePagos.usuarios",
           },
         ])
         .sort({ fecha: -1 });
@@ -156,8 +162,6 @@ router.get("/pacientes", async (req, res) => {
       });
     });
 
-    console.log(ventaPaciente);
-
     // const pacientes = detalles.map((p) => p.paciente.nombre);
     // const uniquesPacientes = [...new Set(pacientes)];
 
@@ -177,6 +181,9 @@ router.get("/idPaciente/:idPaciente", async (req, res) => {
       {
         path: "detalleInventario.inventario",
         //select: 'descripcion precioVenta precioCompra moda',
+      },
+      {
+        path: "detallePagos.usuarios",
       },
       {
         path: "paciente",
@@ -202,6 +209,9 @@ router.get("/:id", async (req, res) => {
       {
         path: "detalleInventario.inventario",
         select: "descripcion precioVenta precioCompra moda",
+      },
+      {
+        path: "detallePagos.usuarios",
       },
       {
         path: "paciente",
@@ -266,7 +276,9 @@ router.put("/detallePago/:_id", async (req, res) => {
       {
         new: true,
       }
-    );
+    ).populate({
+      path: "detallePagos.usuarios",
+    });
     res.status(202).send(detalleSave);
   } catch (error) {
     console.log(error);
