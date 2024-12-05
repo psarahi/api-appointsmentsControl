@@ -13,15 +13,6 @@ const conversor = require("conversor-numero-a-letras-es-ar");
 let ClaseConversor = conversor.conversorNumerosALetras;
 let miConversor = new ClaseConversor();
 
-const device = new escpos.USB();
-
-const printer = new escpos.Printer(device);
-const resizeImage = async (inputPath, outputPath) => {
-  await sharp(inputPath)
-    .resize({ width: 300 }) // Match printer width
-    .toFile(outputPath);
-};
-
 const router = express.Router();
 
 // Funcion get todos
@@ -41,6 +32,15 @@ router.get("/", async (req, res) => {
 router.put("/imprimirFactura", async (req, res) => {
   try {
     console.log(req.body);
+
+    const device = new escpos.USB();
+
+    const printer = new escpos.Printer(device);
+    const resizeImage = async (inputPath, outputPath) => {
+      await sharp(inputPath)
+        .resize({ width: 300 }) // Match printer width
+        .toFile(outputPath);
+    };
 
     const fac = await Facturas.find({
       $and: [
