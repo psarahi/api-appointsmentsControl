@@ -8,91 +8,18 @@ const htmlToText = require("html-to-text");
 const sharp = require("sharp");
 const path = require("path");
 const dayjs = require("dayjs");
-const fs = require('fs');
+const fs = require("fs");
 const conversor = require("conversor-numero-a-letras-es-ar");
 let ClaseConversor = conversor.conversorNumerosALetras;
 let miConversor = new ClaseConversor();
 
-const articulos = [
-  {
-    cantidad: 1,
-    descripcion: "Lentes monofocales",
-    monto: 1568.0,
-  },
-  {
-    cantidad: 1,
-    descripcion: "Lentes trifocales para sol",
-    monto: 2280.0,
-  },
-  {
-    cantidad: 1,
-    descripcion: "Lentes presionados",
-    monto: 2500.0,
-  },
-];
+const device = new escpos.USB();
 
-const table = `
-<!doctype html>
-    <html>
-        <head>
-            <meta charset='utf-8'>
-            <link href='styles/style.css' rel='stylesheet' type='text/css' />        
-        </head>   
-        <body>
-            <div class='invoice-box'>
-                <table style='width:100%' class='receipt-table' border='0'>
-                    <thead>
-                        <tr class='heading'>
-                            <th>Cantidad</th>
-                            <th>Descripcion</th>
-                            <th>Monto</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${articulos.map(
-                          (item) =>
-                            `
-                                <tr>
-                                    <td>${item.cantidad}</td>
-                                    <td>${item.descripcion}</td>
-                                    <td>${item.monto.toFixed(2)}</td>
-                                </tr>
-                            `
-                        )}
-                    </tbody>
-            </table>
-            </div>            
-        </body>     
-    </html>
-`;
-
-const imagen = `
-<!doctype html>
-    <html>
-        <head>
-            <meta charset='utf-8'>
-            <link href='styles/style.css' rel='stylesheet' type='text/css' />        
-        </head>   
-        <body>
-            <div>
-            <img src='/logoOptica.png' alt='Logo' >
-            </div>
-        </body>     
-    </html>
-`;
-
-const textHtml = htmlToText.convert(table, {
-  wordwrap: false,
-  tables: [".receipt-box", ".receipt-table"],
-});
-
-//const device = new escpos.USB();
-
-//const printer = new escpos.Printer(device);
+const printer = new escpos.Printer(device);
 const resizeImage = async (inputPath, outputPath) => {
   await sharp(inputPath)
-    .resize({width: 300}) // Match printer width
-    .toFile(outputPath)
+    .resize({ width: 300 }) // Match printer width
+    .toFile(outputPath);
 };
 
 const router = express.Router();
@@ -111,13 +38,15 @@ router.get("/", async (req, res) => {
 });
 
 // Funcion para imprimir
-router.get("/imprimirFactura", async (req, res) => {
+router.put("/imprimirFactura", async (req, res) => {
   try {
+    console.log(req.body);
+
     const fac = await Facturas.find({
       $and: [
         {
           sucursales: {
-            $eq: req.body.sucursal,
+            $eq: req.body.sucursales,
           },
           estado: true,
         },
@@ -134,7 +63,55 @@ router.get("/imprimirFactura", async (req, res) => {
     const direccion = fac[0].sucursales.direccion;
     const email = fac[0].sucursales.email;
     const factura = req.body.numFacRec;
+    const mensaje = fac[0].mensaje;
     const fechaEmision = fac[0].fechaLimiteEmision;
+    const cliente = req.body.rtn === "" ? req.body.cliente : req.body.nombreRtn;
+    const rtnCliente = req.body.rtn === "" ? "" : req.body.rtn;
+    const total = req.body.total;
+    const descuento = req.body.totalDescuento;
+
+    const articulos = req.body.inventario;
+
+    const table = `
+    <!doctype html>
+        <html>
+            <head>
+                <meta charset='utf-8'>
+                <link href='styles/style.css' rel='stylesheet' type='text/css' />        
+            </head>   
+            <body>
+                <div class='invoice-box'>
+                    <table style='width:100%' class='receipt-table' border='0'>
+                        <thead>
+                            <tr class='heading'>
+                                <th>Cantidad</th>
+                                <th>Descripcion</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${articulos.map(
+                              (item) =>
+                                `
+                                    <tr>
+                                        <td>${item.cantidad}</td>
+                                        <td>${item.descripcion}</td>
+                                        <td>${item.precioVenta.toFixed(2)}</td>
+                                    </tr>
+                                `
+                            )}
+                        </tbody>
+                </table>
+                </div>            
+            </body>     
+        </html>
+    `;
+
+    const textHtml = htmlToText.convert(table, {
+      wordwrap: false,
+      tables: [".receipt-box", ".receipt-table"],
+    });
+
     device.open(function (error) {
       if (error) {
         console.error("Error al abrir el dispositivo:", error);
@@ -157,51 +134,52 @@ router.get("/imprimirFactura", async (req, res) => {
               .encode("utf8")
               .size(0, 0)
               .text("Con vision de servicio")
-              // .text(`RTN ${rtn}`)
-              // .text(`Tel: ${tel} / Cel: ${cel}`)
-              // .text(`Direccion ${direccion}`)
-              // .text(`Email ${email}`)
-              // .text("")
-              // .align("LT")
-              // .text(`#Factura: ${factura}`)
-              // .text(`Fecha: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
-              // .text("Cliente: 0 - Optica y laboratorio Echeverria")
-              // .text(`Vendedor: General`)
-              // .text(`Terminos: Contado`)
-              // .text(`Estado: Pagado`)
-              // .text("")
-              // .drawLine()
-              // .text(textHtml)
-              // .drawLine()
-              // .align("RT")
-              // .text("Descuento y rebajas L 230.00")
-              // .text("Sub Total L 1,568.00")
-              // .text("Importe Exento L 0.00")
-              // .text("Importe Grabado L 1,568.00")
-              // .text("Importe Exento 15% L 0.00")
-              // .text("Importe Grabado 18% L 1,568.00")
-              // .text("15% I.S.V. L 235.00")
-              // .text("18% I.S.V. L 235.00")
-              // .text("Total a pagar L 1,803.00")
-              // .text("Forma de pago")
-              // .text("Tajeta de credito L 1,803.00")
-              // .text("")
-              // .align("ct")
-              // .text(miConversor.convertToText(1803.0).toLocaleUpperCase())
-              // .align("lt")
-              // .text(`CAI: ${cai}`)
-              // .text(`Rango autorizado: ${rango}`)
-              // .text(
-              //   `Fecha limite emision : ${dayjs(fechaEmision)
-              //     .add(6, "hour")
-              //     .format("YYYY-MM-DD")}`
-              // )
-              // .text("")
-              // .align("ct")
-              // .text("La factura es beneficio de todos, exijala")
-              // .text("No se hacen devoluciones")
-              // .text("")
-              // .text("")
+              .text(`RTN ${rtn}`)
+              .text(`Tel: ${tel} / Cel: ${cel}`)
+              .text(`Direccion ${direccion}`)
+              .text(`Email ${email}`)
+              .text("")
+              .align("LT")
+              .text(`#Factura: ${factura}`)
+              .text(`Fecha: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+              .text(`Cliente: ${cliente}`)
+              .text(`RTN: ${rtnCliente}`)
+              .text(`Vendedor: General`)
+              .text(`Terminos: Contado`)
+              .text(`Estado: Pagado`)
+              .text("")
+              .drawLine()
+              .text(textHtml)
+              .drawLine()
+              .align("RT")
+              .text(`Descuento y rebajas L ${descuento}`)
+              .text(`Sub Total L 1,568.00`)
+              .text(`Importe Exento L 0.00`)
+              .text(`Importe Exonerado L 1,568.00`)
+              .text(`Importe Gravado 15% L 0.00`)
+              .text(`Importe Gravado 18% L 1,568.00`)
+              .text(`15% I.S.V. L 235.00`)
+              .text(`18% I.S.V. L 235.00`)
+              .text(`Total a pagar L 1,803.00`)
+              .text("")
+              .text(`${req.body.formaPago} L ${total}`)
+              .text("")
+              .align("ct")
+              .text(miConversor.convertToText(total).toLocaleUpperCase())
+              .align("lt")
+              .text(`CAI: ${cai}`)
+              .text(`Rango autorizado: ${rango}`)
+              .text(
+                `Fecha limite emision : ${dayjs(fechaEmision)
+                  .add(6, "hour")
+                  .format("YYYY-MM-DD")}`
+              )
+              .text("")
+              .align("ct")
+              .text("La factura es beneficio de todos, exijala")
+              .text(mensaje)
+              .text("")
+              .text("")
               .beep(1, 100)
               .cut()
               .close();

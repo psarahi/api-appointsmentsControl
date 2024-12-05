@@ -26,6 +26,9 @@ const facturasShema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  mensaje: {
+    type: String,
+  },
 });
 
 const Facturas = mongoose.model("facturas", facturasShema);
