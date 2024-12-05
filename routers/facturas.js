@@ -33,14 +33,14 @@ router.put("/imprimirFactura", async (req, res) => {
   try {
     console.log(req.body);
 
-    const device = new escpos.USB();
+    // const device = new escpos.USB();
 
-    const printer = new escpos.Printer(device);
-    const resizeImage = async (inputPath, outputPath) => {
-      await sharp(inputPath)
-        .resize({ width: 300 }) // Match printer width
-        .toFile(outputPath);
-    };
+    // const printer = new escpos.Printer(device);
+    // const resizeImage = async (inputPath, outputPath) => {
+    //   await sharp(inputPath)
+    //     .resize({ width: 300 }) // Match printer width
+    //     .toFile(outputPath);
+    // };
 
     const fac = await Facturas.find({
       $and: [
@@ -112,81 +112,81 @@ router.put("/imprimirFactura", async (req, res) => {
       tables: [".receipt-box", ".receipt-table"],
     });
 
-    device.open(function (error) {
-      if (error) {
-        console.error("Error al abrir el dispositivo:", error);
-        return;
-      }
+    // device.open(function (error) {
+    //   if (error) {
+    //     console.error("Error al abrir el dispositivo:", error);
+    //     return;
+    //   }
 
-      resizeImage("logoOptica.png", "output.png").then(() => {
-        device.open(() => {
-          if (error) {
-            console.error("Error al abrir el dispositivo:", error);
-            return;
-          }
-          escpos.Image.load(path.resolve("output.png"), (image) => {
-            printer
-              .align("ct")
-              .raster(image)
-              .font("a")
-              //.align("ct")
-              //.style('bu')
-              .encode("utf8")
-              .size(0, 0)
-              .text("Con vision de servicio")
-              .text(`RTN ${rtn}`)
-              .text(`Tel: ${tel} / Cel: ${cel}`)
-              .text(`Direccion ${direccion}`)
-              .text(`Email ${email}`)
-              .text("")
-              .align("LT")
-              .text(`#Factura: ${factura}`)
-              .text(`Fecha: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
-              .text(`Cliente: ${cliente}`)
-              .text(`RTN: ${rtnCliente}`)
-              .text(`Vendedor: General`)
-              .text(`Terminos: Contado`)
-              .text(`Estado: Pagado`)
-              .text("")
-              .drawLine()
-              .text(textHtml)
-              .drawLine()
-              .align("RT")
-              .text(`Descuento y rebajas L ${descuento}`)
-              .text(`Sub Total L 1,568.00`)
-              .text(`Importe Exento L 0.00`)
-              .text(`Importe Exonerado L 1,568.00`)
-              .text(`Importe Gravado 15% L 0.00`)
-              .text(`Importe Gravado 18% L 1,568.00`)
-              .text(`15% I.S.V. L 235.00`)
-              .text(`18% I.S.V. L 235.00`)
-              .text(`Total a pagar L 1,803.00`)
-              .text("")
-              .text(`${req.body.formaPago} L ${total}`)
-              .text("")
-              .align("ct")
-              .text(miConversor.convertToText(total).toLocaleUpperCase())
-              .align("lt")
-              .text(`CAI: ${cai}`)
-              .text(`Rango autorizado: ${rango}`)
-              .text(
-                `Fecha limite emision : ${dayjs(fechaEmision)
-                  .add(6, "hour")
-                  .format("YYYY-MM-DD")}`
-              )
-              .text("")
-              .align("ct")
-              .text("La factura es beneficio de todos, exijala")
-              .text(mensaje)
-              .text("")
-              .text("")
-              .beep(1, 100)
-              .cut()
-              .close();
-          });
-        });
-      });
-    });
+    //   resizeImage("logoOptica.png", "output.png").then(() => {
+    //     device.open(() => {
+    //       if (error) {
+    //         console.error("Error al abrir el dispositivo:", error);
+    //         return;
+    //       }
+    //       escpos.Image.load(path.resolve("output.png"), (image) => {
+    //         printer
+    //           .align("ct")
+    //           .raster(image)
+    //           .font("a")
+    //           //.align("ct")
+    //           //.style('bu')
+    //           .encode("utf8")
+    //           .size(0, 0)
+    //           .text("Con vision de servicio")
+    //           .text(`RTN ${rtn}`)
+    //           .text(`Tel: ${tel} / Cel: ${cel}`)
+    //           .text(`Direccion ${direccion}`)
+    //           .text(`Email ${email}`)
+    //           .text("")
+    //           .align("LT")
+    //           .text(`#Factura: ${factura}`)
+    //           .text(`Fecha: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+    //           .text(`Cliente: ${cliente}`)
+    //           .text(`RTN: ${rtnCliente}`)
+    //           .text(`Vendedor: General`)
+    //           .text(`Terminos: Contado`)
+    //           .text(`Estado: Pagado`)
+    //           .text("")
+    //           .drawLine()
+    //           .text(textHtml)
+    //           .drawLine()
+    //           .align("RT")
+    //           .text(`Descuento y rebajas L ${descuento}`)
+    //           .text(`Sub Total L 1,568.00`)
+    //           .text(`Importe Exento L 0.00`)
+    //           .text(`Importe Exonerado L 1,568.00`)
+    //           .text(`Importe Gravado 15% L 0.00`)
+    //           .text(`Importe Gravado 18% L 1,568.00`)
+    //           .text(`15% I.S.V. L 235.00`)
+    //           .text(`18% I.S.V. L 235.00`)
+    //           .text(`Total a pagar L 1,803.00`)
+    //           .text("")
+    //           .text(`${req.body.formaPago} L ${total}`)
+    //           .text("")
+    //           .align("ct")
+    //           .text(miConversor.convertToText(total).toLocaleUpperCase())
+    //           .align("lt")
+    //           .text(`CAI: ${cai}`)
+    //           .text(`Rango autorizado: ${rango}`)
+    //           .text(
+    //             `Fecha limite emision : ${dayjs(fechaEmision)
+    //               .add(6, "hour")
+    //               .format("YYYY-MM-DD")}`
+    //           )
+    //           .text("")
+    //           .align("ct")
+    //           .text("La factura es beneficio de todos, exijala")
+    //           .text(mensaje)
+    //           .text("")
+    //           .text("")
+    //           .beep(1, 100)
+    //           .cut()
+    //           .close();
+    //       });
+    //     });
+    //   });
+    // });
 
     res.send("print");
   } catch (error) {
@@ -224,9 +224,16 @@ router.get("/facturaRecibo/:sucursal", async (req, res) => {
       ],
     });
     let correlativo = await Correlativo.find({
-      sucursales: {
-        $eq: req.params.sucursal,
-      },
+      $and: [
+        {
+          sucursales: {
+            $eq: req.params.sucursal,
+          },
+        },
+        {
+          nombre: "Recibo",
+        },
+      ],
     });
 
     let numReciboFactura = {

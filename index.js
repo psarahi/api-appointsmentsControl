@@ -16,7 +16,7 @@ const inventario = require('./routers/inventario');
 const optometrista = require('./routers/optometrista');
 const detalleVentas = require('./routers/detalleVenta');
 const facturas = require('./routers/facturas');
-const correlativos = require('./routers/correlativoRecibos');
+const correlativos = require('./routers/correlativos');
 
 app.use(express.json());
 

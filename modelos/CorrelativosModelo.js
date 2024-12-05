@@ -10,6 +10,10 @@ const correlativoShema = new mongoose.Schema({
     ref: "sucursales",
     required: true,
   },
+  nombre: {
+    type: String,
+    required: true,
+  },
 });
 
 const Correlativo = mongoose.model("correlativos", correlativoShema);
