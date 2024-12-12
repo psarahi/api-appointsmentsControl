@@ -1,5 +1,6 @@
 const express = require("express");
 const DetalleVenta = require("../modelos/detalleVentaModelo");
+const Inventario = require("../modelos/InventarioModelo");
 const moment = require("moment");
 const router = express.Router();
 
@@ -30,6 +31,44 @@ router.get("/", async (req, res) => {
     res.status(404).send("No se encontro ningun documento");
   }
 });
+
+// Funcion get todos
+router.get(
+  "/reporteVentas/:sucursal/:fechaInicial/:fechaFinal",
+  async (req, res) => {
+    try {
+      const detalles = await DetalleVenta.find({
+        $and: [
+          {
+            sucursales: { $eq: req.params.sucursal },
+            fecha: {
+              $gt: moment(req.params.fechaInicial)
+                .subtract(1, "day")
+                .startOf("day"),
+              $lte: moment(req.params.fechaFinal),
+            },
+          },
+        ],
+      })
+        .populate([
+          {
+            path: "paciente",
+            select: "nombre",
+          },
+          {
+            path: "sucursales",
+            select: "nombre",
+          },
+        ])
+        .sort({ fecha: -1 });
+
+      res.status(200).send(detalles);
+    } catch (error) {
+      console.log(error);
+      res.status(404).send("No se encontro ningun documento");
+    }
+  }
+);
 
 // Funcion get todos
 router.get(
@@ -252,6 +291,39 @@ router.put("/:_id", async (req, res) => {
         new: true,
       }
     );
+    res.status(202).send(detalle);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("No se encontro ningun documento");
+  }
+});
+
+// Funcion PUT
+router.put("/cancelarVenta/:_id", async (req, res) => {
+  try {
+    const detalle = await DetalleVenta.findByIdAndUpdate(
+      req.params._id,
+      {
+        estado: false,
+      },
+      {
+        new: true,
+      }
+    );
+
+    detalle.detalleInventario.forEach(async (element) => {
+      if (element.cantidad > 0) {
+        const inventario = await Inventario.findById(element.inventario);
+        const inv = await Inventario.findByIdAndUpdate(
+          element.inventario,
+          {
+            existencia: inventario.existencia + element.cantidad,
+          },
+          { new: true }
+        );
+      }
+    });
+
     res.status(202).send(detalle);
   } catch (error) {
     console.log(error);

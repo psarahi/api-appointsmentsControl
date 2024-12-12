@@ -100,6 +100,14 @@ const detalleVenta = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  trabajoHecho: {
+    type: Boolean,
+    default: false,
+  },
+  estado: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const DetalleVenta = mongoose.model("detalleVenta", detalleVenta);
