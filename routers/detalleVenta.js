@@ -42,7 +42,7 @@ router.get(
           {
             sucursales: { $eq: req.params.sucursal },
             fecha: {
-              $gte: dayjs(req.params.fechaInicial).subtract(1, "days"),
+              $gte: dayjs(req.params.fechaInicial).subtract(12, "hour"),
               $lt: dayjs(req.params.fechaFinal),
             },
           },
@@ -83,7 +83,7 @@ router.get(
           {
             sucursales: { $eq: req.params.sucursal },
             fecha: {
-              $gte: dayjs(req.params.fechaInicial).subtract(1, "days"),
+              $gte: dayjs(req.params.fechaInicial).subtract(12, "hour"),
               $lt: dayjs(req.params.fechaFinal),
             },
           },
