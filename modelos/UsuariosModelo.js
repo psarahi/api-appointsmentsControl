@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 const jwt = require('jsonwebtoken');
-moment.locale('es');
+const dayjs = require('dayjs');
 
 const usuarioSchema = new mongoose.Schema({
 
@@ -27,7 +26,7 @@ const usuarioSchema = new mongoose.Schema({
     },
     fechaRegistro: {
         type: Date,
-        default: moment().format("YYYY-MM-DD HH:mm:ss")
+        default: dayjs().format("YYYY-MM-DD")
     },
     estado: {
         type: Boolean,

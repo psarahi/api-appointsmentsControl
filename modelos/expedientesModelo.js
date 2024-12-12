@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
-moment.locale("es");
+const dayjs = require("dayjs");
 
 const expedientesShema = mongoose.Schema({
   paciente: {
@@ -21,7 +20,7 @@ const expedientesShema = mongoose.Schema({
   },
   fecha: {
     type: Date,
-    default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+    default: dayjs().format("YYYY-MM-DD"),
   },
   antecedentes: {
     type: String,

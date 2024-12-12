@@ -1,13 +1,13 @@
+const dayjs = require('dayjs');
 const express = require('express');
 const router = express.Router();
-const moment = require('moment');
 
 router.get('', function(req, res) {
     try {
-        res.send(`Bienvenido Api  ${moment().format()}`);
+        res.send(`Bienvenido Api  ${dayjs().format()}`);
     } catch (error) {
         console.log(error);
-        res.send(`Error ${moment().format()}`);
+        res.send(`Error ${dayjs().format()}`);
     }
 });
 

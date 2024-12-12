@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
-moment.locale("es");
+const dayjs = require("dayjs");
 
 const pacienteSchema = new mongoose.Schema({
   nombre: {
@@ -24,11 +23,11 @@ const pacienteSchema = new mongoose.Schema({
   },
   fechaRegistro: {
     type: Date,
-    default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+    default: dayjs().format("YYYY-MM-DD"),
   },
   ultimaCita: {
     type: Date,
-    default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+    default: dayjs().format("YYYY-MM-DD"),
   },
   sucursales: {
     type: mongoose.Schema.Types.ObjectId,
@@ -37,7 +36,7 @@ const pacienteSchema = new mongoose.Schema({
   },
   citaProxima: {
     type: Date,
-    default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+    default: dayjs().format("YYYY-MM-DD"),
   },
   estado: {
     type: Boolean,

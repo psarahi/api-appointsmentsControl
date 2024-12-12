@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
-moment.locale("es");
+const dayjs = require("dayjs");
 
 const detalleVenta = new mongoose.Schema({
   tipoVenta: {
@@ -11,8 +10,8 @@ const detalleVenta = new mongoose.Schema({
     type: String,
   },
   proteccion: {
-    type:[String]
-    },
+    type: [String],
+  },
   material: {
     type: String,
   },
@@ -51,17 +50,21 @@ const detalleVenta = new mongoose.Schema({
   ],
   fecha: {
     type: Date,
-    default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+    default: dayjs().format("YYYY-MM-DD"),
+  },
+  entregaProgramada: {
+    type: Date,
+    default: dayjs().format("YYYY-MM-DD"),
   },
   fechaEntrega: {
     type: Date,
-    default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+    default: dayjs().format("YYYY-MM-DD"),
   },
   detallePagos: [
     {
       fecha: {
         type: Date,
-        default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+        default: dayjs().format("YYYY-MM-DD"),
       },
       formaPago: {
         type: String,

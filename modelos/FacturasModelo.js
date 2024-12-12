@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
+const dayjs = require("dayjs");
 
 const facturasShema = new mongoose.Schema({
   desde: {
@@ -12,7 +12,7 @@ const facturasShema = new mongoose.Schema({
   },
   fechaLimiteEmision: {
     type: Date,
-    default: moment().subtract(6, "hour").format("YYYY-MM-DD HH:mm:ss"),
+    default: dayjs().format("YYYY-MM-DD"),
   },
   sucursales: {
     type: mongoose.Schema.Types.ObjectId,
