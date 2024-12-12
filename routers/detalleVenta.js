@@ -37,14 +37,12 @@ router.get(
   "/reporteVentas/:sucursal/:fechaInicial/:fechaFinal",
   async (req, res) => {
     try {
-      console.log(req.params.fechaInicial, req.params.fechaFinal);
-      
       const detalles = await DetalleVenta.find({
         $and: [
           {
             sucursales: { $eq: req.params.sucursal },
             fecha: {
-              $gte: dayjs(req.params.fechaInicial).subtract(6, 'hours'),
+              $gte: dayjs(req.params.fechaInicial).subtract(1, "days"),
               $lt: dayjs(req.params.fechaFinal),
             },
           },
@@ -75,6 +73,8 @@ router.get(
   "/detalleInventario/:sucursal/:fechaInicial/:fechaFinal",
   async (req, res) => {
     try {
+      console.log(req.params.fechaInicial, req.params.fechaFinal);
+
       let invExistente = [];
       let invPedido = [];
 
@@ -82,9 +82,9 @@ router.get(
         $and: [
           {
             sucursales: { $eq: req.params.sucursal },
-              fecha: {
-                $gte: dayjs(req.params.fechaInicial).subtract(6, 'hours'),
-                $lt: dayjs(req.params.fechaFinal),
+            fecha: {
+              $gte: dayjs(req.params.fechaInicial).subtract(1, "days"),
+              $lt: dayjs(req.params.fechaFinal),
             },
           },
         ],
