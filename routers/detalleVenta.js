@@ -1,7 +1,7 @@
 const express = require("express");
 const DetalleVenta = require("../modelos/detalleVentaModelo");
 const Inventario = require("../modelos/InventarioModelo");
-const moment = require("moment");
+const dayjs = require("dayjs");
 const router = express.Router();
 
 // Funcion get todos
@@ -37,15 +37,15 @@ router.get(
   "/reporteVentas/:sucursal/:fechaInicial/:fechaFinal",
   async (req, res) => {
     try {
+      console.log(req.params.fechaInicial, req.params.fechaFinal);
+      
       const detalles = await DetalleVenta.find({
         $and: [
           {
             sucursales: { $eq: req.params.sucursal },
             fecha: {
-              $gt: moment(req.params.fechaInicial)
-                .subtract(1, "day")
-                .startOf("day"),
-              $lte: moment(req.params.fechaFinal),
+              $gte: dayjs(req.params.fechaInicial).subtract(6, 'hours'),
+              $lt: dayjs(req.params.fechaFinal),
             },
           },
         ],
@@ -82,11 +82,9 @@ router.get(
         $and: [
           {
             sucursales: { $eq: req.params.sucursal },
-            fecha: {
-              $gt: moment(req.params.fechaInicial)
-                .subtract(1, "day")
-                .startOf("day"),
-              $lte: moment(req.params.fechaFinal),
+              fecha: {
+                $gte: dayjs(req.params.fechaInicial).subtract(6, 'hours'),
+                $lt: dayjs(req.params.fechaFinal),
             },
           },
         ],
@@ -110,7 +108,7 @@ router.get(
               cilindro: detalleInventario.inventario.cilindro,
               adicion: detalleInventario.inventario.adicion,
               tipoVenta: detalle.tipoVenta,
-              fecha: moment(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
+              fecha: dayjs(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
               cantidad: detalleInventario.cantidad,
               linea: detalleInventario.inventario.linea,
               // precioVenta: detalleInventario.inventario.precioVenta,
@@ -133,7 +131,7 @@ router.get(
               cilindro: detalleInventario.inventario.cilindro,
               adicion: detalleInventario.inventario.adicion,
               tipoVenta: detalle.tipoVenta,
-              fecha: moment(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
+              fecha: dayjs(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
               cantidad: detalleInventario.cantidad,
               linea: detalleInventario.inventario.linea,
               // precioVenta: detalleInventario.inventario.precioVenta,
