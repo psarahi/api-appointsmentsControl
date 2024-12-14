@@ -60,6 +60,10 @@ const detalleVenta = new mongoose.Schema({
     type: Date,
     default: dayjs().format("YYYY-MM-DD"),
   },
+  fechaRealizado:{
+    type: Date,
+    default: dayjs().format("YYYY-MM-DD"),
+  },
   detallePagos: [
     {
       fecha: {

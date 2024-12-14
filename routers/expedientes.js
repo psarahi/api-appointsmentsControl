@@ -199,4 +199,14 @@ router.delete("/:_id", async (req, res) => {
   }
 });
 
+
+router.post("/enviarMessage", async (req, res) => {
+  try {
+
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("No se encontraron expedientes");
+  }
+});
+
 module.exports = router;
