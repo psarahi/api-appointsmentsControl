@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', async(req, res) => {
     try {
         const optometristas = await Optometrista.find()
-        .populate('sucursales', 'nombre');
+        .populate('sucursales');
 
         res.send(optometristas);
     } catch (error) {
@@ -19,8 +19,12 @@ router.get('/', async(req, res) => {
 router.post('/', async (req, res) => {
     try {
       const optometrista = new Optometrista(req.body);
-      const result = await optometrista.save();
-      res.status(201).send(result);
+      const result = (await optometrista.save());
+
+      const optometristaSave = await Optometrista.findById(result._id).populate(
+        "sucursales"
+      );
+      res.status(201).send(optometristaSave);
     } catch (error) {
       console.log(error);
       res.status(404).send('No se pudo registrar el documento');
@@ -33,7 +37,7 @@ router.put('/:_id', async (req, res) => {
       //66cce95ffe40b42d2b69260e
       const optometrista = await Optometrista.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
-      });
+      }).populate('sucursales');
       res.status(202).send(optometrista);
     } catch (error) {
       console.log(error);

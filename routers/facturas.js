@@ -255,8 +255,6 @@ router.put("/imprimirFactura", async (req, res) => {
 // Funcion para imprimir RECIBO
 router.put("/imprimirRecibo", async (req, res) => {
   try {
-    console.log(req.body);
-
     const sucursal = await Sucursal.find({
       _id: req.body.sucursales,
     });
@@ -354,7 +352,7 @@ router.put("/imprimirRecibo", async (req, res) => {
     res.send("print");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(404).send("No se pudo imprimir");
   }
 });
 
