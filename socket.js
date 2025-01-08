@@ -12,8 +12,6 @@ const path = require("path");
 const dayjs = require("dayjs");
 const fs = require("fs");
 const conversor = require("conversor-numero-a-letras-es-ar");
-let ClaseConversor = conversor.conversorNumerosALetras;
-let miConversor = new ClaseConversor();
 const router = express.Router();
 
 let printerClients = []; // Almacena clientes conectados
