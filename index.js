@@ -1,11 +1,16 @@
-//require('dotenv').config();
 const mongoose = require("mongoose");
-
 const express = require("express");
+// const { Server } = require('socket.io');
+const socketIO = require('socket.io');
 const http = require("http");
 const app = express();
 
 let server = http.createServer(app);
+module.exports.io = socketIO(server);
+// const io = new Server(server);
+
+require('./socket')
+app.use(express.json());
 
 const inicio = require("./routers/inicio");
 const sucursal = require("./routers/sucursales");
@@ -17,8 +22,7 @@ const optometrista = require("./routers/optometrista");
 const detalleVentas = require("./routers/detalleVenta");
 const facturas = require("./routers/facturas");
 const correlativos = require("./routers/correlativos");
-
-app.use(express.json());
+const thermalPrinter = require('./socket');
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -44,6 +48,7 @@ app.use("/api/optometrista", optometrista);
 app.use("/api/detalleVentas", detalleVentas);
 app.use("/api/facturas", facturas);
 app.use("/api/correlativo", correlativos);
+app.use("/api/thermalPrinter", thermalPrinter);
 
 const port = process.env.API_PORT || 3003;
 
