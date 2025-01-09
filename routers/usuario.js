@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 router.get("/", async (req, res) => {
   try {
     const usuarios = await Usuario.find()
-      .populate("sucursales", "nombre")
+      .populate("sucursales")
       .sort({ fechaRegistro: -1 });
     res.send(usuarios);
   } catch (error) {
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 router.get("/activo", async (req, res) => {
   try {
     const usuarios = await Usuario.find({ estado: true })
-      .populate("sucursales", "nombre")
+      .populate("sucursales")
       .sort({ fechaRegistro: -1 });
     res.send(usuarios);
   } catch (error) {
@@ -35,8 +35,7 @@ router.get("/activo", async (req, res) => {
 router.get("/:_id", async (req, res) => {
   try {
     const usuario = await Usuario.findById(req.params._id).populate(
-      "sucursales",
-      "nombre"
+      "sucursales"
     );
 
     res.send(usuario);
@@ -62,10 +61,14 @@ router.post("/", async (req, res) => {
     const usuarioSave = new Usuario(req.body);
     usuarioSave.password = hashPassword;
 
-    await usuarioSave.save();
+    const result = await usuarioSave.save();
     const jwtToken = await generarJWT(usuarioSave.id, usuarioSave.nombre);
 
-    res.status(201).header("authorization", jwtToken).send(usuarioSave);
+    const usuarioResult = await Usuario.findById(result._id).populate(
+      "sucursales"
+    );
+
+    res.status(201).header("authorization", jwtToken).send(usuarioResult);
   } catch (error) {
     console.log(error);
     res.status(404).send("No se pudo registrar el documento");
@@ -110,13 +113,49 @@ router.put("/:_id", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-    const usuario = await Usuario.findByIdAndUpdate(req.params._id, req.body, {
-      new: true,
-    });
+    const usuario = await Usuario.findByIdAndUpdate(
+      req.params._id,
+      { ...req.body, password: hashPassword },
+      {
+        new: true,
+      }
+    ).populate("sucursales");
 
-    usuario.password = hashPassword;
+    console.log(usuario);
 
-    res.status(204).send();
+    res.status(202).send(usuario);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("No se encontro ningun documento");
+  }
+});
+
+// Funcion PUT para cambiar estado
+router.put("/cambiarEstado/:_id", async (req, res) => {
+  try {
+    if (req.params._id.length != 24) {
+      return res
+        .status(404)
+        .send("El id del usuario no contiene el numero correcto de digitos");
+    }
+
+    const usuario = await Usuario.findById(req.params._id);
+
+    if (!usuario) {
+      return res
+        .status(404)
+        .send("No se encontro ningun documento para borrar");
+    }
+
+    const usuarioUpdate = await Usuario.findByIdAndUpdate(
+      req.params._id,
+      { estado: req.body.estado },
+      {
+        new: true,
+      }
+    );
+
+    res.status(202).send(usuarioUpdate);
   } catch (error) {
     console.log(error);
     res.status(404).send("No se encontro ningun documento");

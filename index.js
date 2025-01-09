@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const express = require("express");
 // const { Server } = require('socket.io');
-const socketIO = require('socket.io');
+const socketIO = require("socket.io");
 const http = require("http");
 const app = express();
 
@@ -9,7 +9,7 @@ let server = http.createServer(app);
 module.exports.io = socketIO(server);
 // const io = new Server(server);
 
-require('./socket')
+require("./routers/thermalPrinter");
 app.use(express.json());
 
 const inicio = require("./routers/inicio");
@@ -22,7 +22,7 @@ const optometrista = require("./routers/optometrista");
 const detalleVentas = require("./routers/detalleVenta");
 const facturas = require("./routers/facturas");
 const correlativos = require("./routers/correlativos");
-const thermalPrinter = require('./socket');
+const thermalPrinter = require("./routers/thermalPrinter");
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -59,7 +59,7 @@ server.listen(port, () => console.log("Escuchando Puerto: " + port));
 mongoose
   .connect(
     `mongodb+srv://lesly:${process.env.MONGOPASS_ATLAS}@cluster0.g3yej.mongodb.net/appointmentsControl?retryWrites=true&w=majority&appName=Cluster0`
-    // `${process.env.STRING_CONNECT}://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.CLUSTER_NAME}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}?authSource=admin`  
-)
+    // `${process.env.STRING_CONNECT}://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.CLUSTER_NAME}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}?authSource=admin`
+  )
   .then(() => console.log("Conectado a MongoDb"))
   .catch((error) => console.log(error));

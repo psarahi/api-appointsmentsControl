@@ -9,7 +9,6 @@ const htmlToText = require("html-to-text");
 const sharp = require("sharp");
 const path = require("path");
 const dayjs = require("dayjs");
-const fs = require("fs");
 const conversor = require("conversor-numero-a-letras-es-ar");
 let ClaseConversor = conversor.conversorNumerosALetras;
 let miConversor = new ClaseConversor();
@@ -78,6 +77,86 @@ router.put("/imprimirFactura", async (req, res) => {
       }
     });
 
+    const totales = [
+      {
+        label: "DESCUENTOS Y REBAJAS",
+        value: `L ${formatearNumero(descuento)}`,
+      },
+      {
+        label: "SUB TOTAL",
+        value: `L ${formatearNumero(total - isv15)}`,
+      },
+      {
+        label: "IMPORTE EXENTO",
+        value: `L ${formatearNumero(valorExento)}`,
+      },
+      {
+        label: "IMPORTE EXONERADO",
+        value: `L 0.00`,
+      },
+      {
+        label: "IMPORTE GRAVADO 15%",
+        value: `L ${formatearNumero(valorGravado15 - isv15)}`,
+      },
+      {
+        label: "IMPORTE GRAVADO 18%",
+        value: `L 0.00`,
+      },
+      {
+        label: "I.S.V. 15%",
+        value: `L ${formatearNumero(isv15)}`,
+      },
+      {
+        label: "I.S.V. 18%",
+        value: `L 0.00`,
+      },
+      {
+        label: "TOTAL A PAGAR",
+        value: `L  ${formatearNumero(total)}`,
+      },
+    ];
+
+    let labelsTotales = [];
+    const lineWidth = 32; // Ancho de caracteres por línea (depende de tu impresora)
+
+    totales.forEach((t) => {
+      const spacesBetween = Math.max(
+        0,
+        lineWidth - t.label.length - t.value.length
+      );
+      const alignedText = `${t.label}${" ".repeat(spacesBetween)}${
+        t.value
+      }`;
+
+      labelsTotales.push(alignedText);
+    });
+
+    const datosImprimir = {
+      rtn: rtn,
+      tel: tel,
+      cel: cel,
+      direccion: direccion,
+      email: email,
+      numFacRec: factura,
+      cliente: cliente,
+      rtnCliente: rtnCliente,
+      vendedor: vendedor,
+      articulos: articulos,
+      labelTotales : labelsTotales,
+      monto: req.body.monto,
+      formaPago: formaPago,
+      fecha: '',
+      fechaEmision: fechaEmision,
+      total: total,
+      totalLetras: miConversor.convertToText(total).toLocaleUpperCase(),
+      acuenta: req.body.acuenta,
+      cai: cai,
+      rango: rango,
+      paginaDigital: '',
+      sucursales: req.body.sucursales,
+      mensaje: mensaje
+  };
+
     const device = new escpos.USB();
     const printer = new escpos.Printer(device);
     const resizeImage = async (inputPath, outputPath) => {
@@ -127,60 +206,6 @@ router.put("/imprimirFactura", async (req, res) => {
             console.error("Error al abrir el dispositivo:", error);
             return;
           }
-
-          const totales = [
-            {
-              label: "DESCUENTOS Y REBAJAS",
-              value: `L ${formatearNumero(descuento)}`,
-            },
-            {
-              label: "SUB TOTAL",
-              value: `L ${formatearNumero(total - isv15)}`,
-            },
-            {
-              label: "IMPORTE EXENTO",
-              value: `L ${formatearNumero(valorExento)}`,
-            },
-            {
-              label: "IMPORTE EXONERADO",
-              value: `L 0.00`,
-            },
-            {
-              label: "IMPORTE GRAVADO 15%",
-              value: `L ${formatearNumero(valorGravado15 - isv15)}`,
-            },
-            {
-              label: "IMPORTE GRAVADO 18%",
-              value: `L 0.00`,
-            },
-            {
-              label: "I.S.V. 15%",
-              value: `L ${formatearNumero(isv15)}`,
-            },
-            {
-              label: "I.S.V. 18%",
-              value: `L 0.00`,
-            },
-            {
-              label: "TOTAL A PAGAR",
-              value: `L  ${formatearNumero(total)}`,
-            },
-          ];
-
-          let labelsTotales = [];
-          const lineWidth = 32; // Ancho de caracteres por línea (depende de tu impresora)
-
-          totales.forEach((t) => {
-            const spacesBetween = Math.max(
-              0,
-              lineWidth - t.label.length - t.value.length
-            );
-            const alignedText = `${t.label}${" ".repeat(spacesBetween)}${
-              t.value
-            }`;
-
-            labelsTotales.push(alignedText);
-          });
 
           escpos.Image.load(path.resolve("output.png"), (image) => {
             printer
@@ -261,20 +286,19 @@ router.put("/imprimirRecibo", async (req, res) => {
 
     const cel = sucursal[0].celular;
     const tel = sucursal[0].telefono;
-    const nombre = sucursal[0].nombre;
+    const nombreSucursal = sucursal[0].nombre;
     const vendedor = req.body.vendedor;
     const direccion = sucursal[0].direccion;
     const paginaDigital = sucursal[0].paginaDigital;
     const email = sucursal[0].email;
     const numTicket = req.body.numFacRec;
-    const cliente = !textValidator(req.body.rtn) ? req.body.cliente : req.body.nombreRtn;
+    const cliente = req.body.cliente;
     const total = req.body.total;
     const formaPago = req.body.formaPago;
     const monto = req.body.monto;
     const fecha = dayjs(req.body.fecha).add(6, 'hour').format('YYYY-MM-DD');
     const articulos = req.body.inventario;
     const acuenta = req.body.acuenta;
-
 
     const table = `
       <table style='width:100%' class='receipt-table' border='0'>
@@ -314,7 +338,7 @@ router.put("/imprimirRecibo", async (req, res) => {
         .align("LT")
         .encode("utf8")
         .size(0.5, 0.5)
-        .text(nombre)
+        .text(nombreSucursal)
         .size(0,0)
         .text("Comprobante")
         .text(`Ticket # ${numTicket}`)

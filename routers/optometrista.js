@@ -34,7 +34,6 @@ router.post('/', async (req, res) => {
   // Funcion PUT
 router.put('/:_id', async (req, res) => {
     try {
-      //66cce95ffe40b42d2b69260e
       const optometrista = await Optometrista.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       }).populate('sucursales');
