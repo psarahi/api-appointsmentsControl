@@ -112,7 +112,6 @@ router.post("/imprimirFactura", async (req, res) => {
   });
 
   const datosImprimir = {
-    opcion: "factura",
     rtnSucursal: rtn,
     nombreSucursal: "",
     tel: tel,
@@ -135,7 +134,7 @@ router.post("/imprimirFactura", async (req, res) => {
     cai: cai,
     rango: rango,
     paginaDigital: "",
-    sucursales: "",
+    sucursales: req.body.sucursales,
     mensaje: mensaje,
   };
 
@@ -147,7 +146,7 @@ router.post("/imprimirFactura", async (req, res) => {
 
   // Enviar el contenido a los clientes conectados
   printerClients.forEach((socket) => {
-    socket.emit("print", { datosImprimir });
+    socket.emit("printFactura", { datosImprimir });
   });
 
   res.send({
@@ -172,7 +171,6 @@ router.post("/imprimirRecibo", async (req, res) => {
   const articulos = req.body.inventario;
 
   const datosImprimir = {
-    opcion: "recibo",
     rtnSucursal: "",
     nombreSucursal: nombreSucursal,
     tel: tel,
@@ -184,7 +182,7 @@ router.post("/imprimirRecibo", async (req, res) => {
     rtnCliente: "",
     vendedor: req.body.vendedor,
     articulos: articulos,
-    labelsTotales: labelsTotales,
+    labelsTotales: [],
     monto: req.body.monto,
     formaPago: req.body.formaPago,
     fecha: fecha,
