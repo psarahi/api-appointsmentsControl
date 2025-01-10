@@ -78,8 +78,26 @@ router.post("/", async (req, res) => {
 // Login de usuario
 router.post("/login", async (req, res) => {
   const { usuario, password } = req.body;
+  console.log(usuario, password);
+  
   try {
-    const usuarioFind = await Usuario.findOne({ usuario });
+    const usuarioFind = await Usuario.findOne({
+      $and: [
+        {
+          estado: true,
+          usuario: {
+            $eq: usuario,
+          },
+          // sucursales: {
+          //   $eq: req.body.sucursales,
+          // },
+        }
+      ]
+ 
+    });
+
+    console.log(usuarioFind);
+    
 
     if (!usuarioFind) {
       return res.status(404).send("No existe el usuario");
@@ -99,6 +117,7 @@ router.post("/login", async (req, res) => {
     payload.nombre = usuarioFind.nombre;
 
     res.status(201).header("authorization", token).send(payload);
+    // res.status(201).send('');
   } catch (error) {
     console.log(error);
     res
