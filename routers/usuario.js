@@ -78,8 +78,7 @@ router.post("/", async (req, res) => {
 // Login de usuario
 router.post("/login", async (req, res) => {
   const { usuario, password } = req.body;
-  console.log(usuario, password);
-  
+
   try {
     const usuarioFind = await Usuario.findOne({
       $and: [
@@ -91,13 +90,9 @@ router.post("/login", async (req, res) => {
           // sucursales: {
           //   $eq: req.body.sucursales,
           // },
-        }
-      ]
- 
+        },
+      ],
     });
-
-    console.log(usuarioFind);
-    
 
     if (!usuarioFind) {
       return res.status(404).send("No existe el usuario");
@@ -129,6 +124,20 @@ router.post("/login", async (req, res) => {
 // Funcion PUT
 router.put("/:_id", async (req, res) => {
   try {
+    const usuario = await Usuario.findByIdAndUpdate(req.params._id, req.body, {
+      new: true,
+    }).populate("sucursales");
+
+    res.status(202).send(usuario);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("No se encontro ningun documento");
+  }
+});
+
+// Funcion PUT de contraseña
+router.put("/changePass/:_id", async (req, res) => {
+  try {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
@@ -139,8 +148,6 @@ router.put("/:_id", async (req, res) => {
         new: true,
       }
     ).populate("sucursales");
-
-    console.log(usuario);
 
     res.status(202).send(usuario);
   } catch (error) {
