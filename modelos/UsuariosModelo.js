@@ -19,6 +19,10 @@ const usuarioSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
+    tipoUsuario: {
+        type: String,
+        required: true
+    },
     sucursales: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'sucursales',

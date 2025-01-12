@@ -13,8 +13,6 @@ let printerClients = []; // Almacena clientes conectados
 
 // Endpoint para imprimir
 router.post("/imprimirFactura", async (req, res) => {
-  console.log(req.body);
-
   const fac = await Facturas.find({
     $and: [
       {
@@ -28,16 +26,17 @@ router.post("/imprimirFactura", async (req, res) => {
 
   let valorExento = 0.0;
   let valorGravado15 = 0.0;
-  let isv15 = 0.0;
+  let isv15 = 0.0;  
 
   const cai = fac[0].sucursales.cai;
+  const nombreSucursales = fac[0].sucursales.nombre;
   const rango = `${fac[0].desde} - ${fac[0].hasta}`;
   const rtn = fac[0].sucursales.rtn;
   const tel = fac[0].sucursales.telefono;
   const cel = fac[0].sucursales.celular;
   const direccion = fac[0].sucursales.direccion.toLocaleUpperCase();
   const email = fac[0].sucursales.email.toLocaleUpperCase();
-  const mensaje = fac[0].mensaje.toLocaleUpperCase();
+  const mensajeFactura = fac[0].sucursales.mensajeFactura;
   const fechaEmision = fac[0].fechaLimiteEmision;
   const cliente = !textValidator(req.body.rtn)
     ? req.body.cliente
@@ -113,7 +112,7 @@ router.post("/imprimirFactura", async (req, res) => {
 
   const datosImprimir = {
     rtnSucursal: rtn,
-    nombreSucursal: "",
+    nombreSucursal: nombreSucursales,
     tel: tel,
     cel: cel,
     direccion: direccion,
@@ -135,7 +134,7 @@ router.post("/imprimirFactura", async (req, res) => {
     rango: rango,
     paginaDigital: "",
     sucursales: req.body.sucursales,
-    mensaje: mensaje,
+    mensajeFactura: mensajeFactura.toLocaleUpperCase(),
   };
 
   if (printerClients.length === 0) {
@@ -194,7 +193,7 @@ router.post("/imprimirRecibo", async (req, res) => {
     rango: "",
     paginaDigital: paginaDigital,
     sucursales: req.body.sucursales,
-    mensaje: "",
+    mensajeFactura: "",
   };
 
   if (printerClients.length === 0) {

@@ -31,8 +31,6 @@ router.get("/", async (req, res) => {
 // Funcion para imprimir FACTURA
 router.put("/imprimirFactura", async (req, res) => {
   try {
-    console.log(req.body);
-
     const fac = await Facturas.find({
       $and: [
         {
@@ -57,10 +55,12 @@ router.put("/imprimirFactura", async (req, res) => {
     const direccion = fac[0].sucursales.direccion.toLocaleUpperCase();
     const email = fac[0].sucursales.email.toLocaleUpperCase();
     const factura = req.body.numFacRec;
-    const mensaje = fac[0].mensaje.toLocaleUpperCase();
+    const mensajeFactura = fac[0].sucursales.mensajeFactura.toLocaleUpperCase();
     const fechaEmision = fac[0].fechaLimiteEmision;
-    const cliente = !textValidator(req.body.rtn) ? req.body.cliente : req.body.nombreRtn;
-    const rtnCliente =  !textValidator(req.body.rtn) ? "" : req.body.rtn;
+    const cliente = !textValidator(req.body.rtn)
+      ? req.body.cliente
+      : req.body.nombreRtn;
+    const rtnCliente = !textValidator(req.body.rtn) ? "" : req.body.rtn;
     const total = req.body.total;
     const descuento = req.body.totalDescuento;
     const formaPago = req.body.formaPago.toLocaleUpperCase();
@@ -124,9 +124,7 @@ router.put("/imprimirFactura", async (req, res) => {
         0,
         lineWidth - t.label.length - t.value.length
       );
-      const alignedText = `${t.label}${" ".repeat(spacesBetween)}${
-        t.value
-      }`;
+      const alignedText = `${t.label}${" ".repeat(spacesBetween)}${t.value}`;
 
       labelsTotales.push(alignedText);
     });
@@ -142,20 +140,20 @@ router.put("/imprimirFactura", async (req, res) => {
       rtnCliente: rtnCliente,
       vendedor: vendedor,
       articulos: articulos,
-      labelTotales : labelsTotales,
+      labelTotales: labelsTotales,
       monto: req.body.monto,
       formaPago: formaPago,
-      fecha: '',
+      fecha: "",
       fechaEmision: fechaEmision,
       total: total,
       totalLetras: miConversor.convertToText(total).toLocaleUpperCase(),
       acuenta: req.body.acuenta,
       cai: cai,
       rango: rango,
-      paginaDigital: '',
+      paginaDigital: "",
       sucursales: req.body.sucursales,
-      mensaje: mensaje
-  };
+      mensajeFactura: mensajeFactura
+    };
 
     const device = new escpos.USB();
     const printer = new escpos.Printer(device);
@@ -260,7 +258,7 @@ router.put("/imprimirFactura", async (req, res) => {
               .text("")
               .align("ct")
               .text("LA FACTURA ES BENEFICIO DE TODOS, EXIJALA")
-              .text(mensaje.toLocaleUpperCase())
+              .text(mensajeFactura.toLocaleUpperCase())
               .feed(3)
               .beep(1, 100)
               .cut()
@@ -296,7 +294,7 @@ router.put("/imprimirRecibo", async (req, res) => {
     const total = req.body.total;
     const formaPago = req.body.formaPago;
     const monto = req.body.monto;
-    const fecha = dayjs(req.body.fecha).add(6, 'hour').format('YYYY-MM-DD');
+    const fecha = dayjs(req.body.fecha).add(6, "hour").format("YYYY-MM-DD");
     const articulos = req.body.inventario;
     const acuenta = req.body.acuenta;
 
@@ -339,7 +337,7 @@ router.put("/imprimirRecibo", async (req, res) => {
         .encode("utf8")
         .size(0.5, 0.5)
         .text(nombreSucursal)
-        .size(0,0)
+        .size(0, 0)
         .text("Comprobante")
         .text(`Ticket # ${numTicket}`)
         .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)

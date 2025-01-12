@@ -27,6 +27,9 @@ const sucursalesShema = new  mongoose.Schema({
     rtn: {
         type: String,
     },
+    mensajeFactura: {
+        type: String,
+      },
     
 });
 

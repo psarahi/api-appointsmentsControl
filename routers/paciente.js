@@ -14,6 +14,23 @@ router.get("/", async (req, res) => {
     res.status(404).send("No se encontraron pacientes");
   }
 });
+
+router.get("/bySucursal/:sucursales", async (req, res) => {
+  try {
+    const pacientes = await Paciente.find({
+      sucursales: {
+        $eq: req.params.sucursales,
+      }
+    })
+      .populate("sucursales")
+      .sort({ fechaRegistro: "desc" });
+
+    res.send(pacientes);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("No se encontraron pacientes");
+  }
+});
 // Funcion get por _id unico
 router.get("/:_id", async (req, res) => {
   try {

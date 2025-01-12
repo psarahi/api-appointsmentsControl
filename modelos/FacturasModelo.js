@@ -25,10 +25,7 @@ const facturasShema = new mongoose.Schema({
   estado: {
     type: Boolean,
     default: true,
-  },
-  mensaje: {
-    type: String,
-  },
+  }
 });
 
 const Facturas = mongoose.model("facturas", facturasShema);
