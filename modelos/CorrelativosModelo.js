@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const correlativoShema = new mongoose.Schema({
-  numRecibo: {
+  numCorrelativo: {
     type: String,
     required: true,
   },

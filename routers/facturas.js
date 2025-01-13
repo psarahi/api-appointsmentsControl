@@ -419,11 +419,11 @@ router.get("/facturaRecibo/:sucursal", async (req, res) => {
       ],
     });
 
-    let numReciboFactura = {
+    let numCorrelativo = {
       factura: [...factura],
       correlativo: [...correlativo],
     };
-    res.send(numReciboFactura);
+    res.send(numCorrelativo);
   } catch (error) {
     console.log(error);
     res.status(404).send("No se encontro ningun documento");

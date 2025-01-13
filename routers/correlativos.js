@@ -5,28 +5,8 @@ const router = express.Router();
 // Funcion get todos
 router.get("/", async (req, res) => {
   try {
-    const correlativo = await Correlativo.find();
+    const correlativo = await Correlativo.find().populate("sucursales");
     res.send(correlativo);
-  } catch (error) {
-    console.log(error);
-    res.status(404).send("No se encontro ningun documento");
-  }
-});
-
-// 190.92.49.9
-// "npm": "^11.0.0",
-
-
-// Funcion get ip
-router.get("/ip", async (req, res) => {
-  try {
-    const response = await fetch("https://api.ipify.org?format=json");
-    const data = await response.json();
-    console.log(data);
-    
-    console.log("IP Pública:", data.ip);
-
-    res.send("ip");
   } catch (error) {
     console.log(error);
     res.status(404).send("No se encontro ningun documento");
@@ -40,7 +20,7 @@ router.get("/bySucursal/:id", async (req, res) => {
       sucursales: {
         $eq: req.params.id,
       },
-    });
+    }).populate("sucursales");
     res.send(correlativo);
   } catch (error) {
     console.log(error);
@@ -51,7 +31,9 @@ router.get("/bySucursal/:id", async (req, res) => {
 // Funcion get por _id unico
 router.get("/:_id", async (req, res) => {
   try {
-    const correlativo = await Correlativo.findById(req.params._id);
+    const correlativo = await Correlativo.findById(req.params._id).populate(
+      "sucursales"
+    );
 
     res.send(correlativo);
   } catch (error) {
@@ -79,7 +61,7 @@ router.put("/:_id", async (req, res) => {
       req.params._id,
       req.body,
       { new: true }
-    );
+    ).populate("sucursales");
     res.status(202).send(correlativo);
   } catch (error) {
     console.log(error);
