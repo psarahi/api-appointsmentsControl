@@ -340,6 +340,8 @@ router.put("/detallePago/:_id", async (req, res) => {
           acuenta: req.body.detallePago.monto,
         },
         numFacRec: req.body.numFacRec,
+        rtn: req.body.rtn,
+        nombreRtn: req.body.nombreRtn
       },
       {
         new: true,

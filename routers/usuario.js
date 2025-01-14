@@ -77,7 +77,7 @@ router.post("/", async (req, res) => {
 
 // Login de usuario
 router.post("/login", async (req, res) => {
-  const { usuario, password } = req.body;
+  const { usuario, password, sucursal } = req.body;
 
   try {
     const usuarioFind = await Usuario.findOne({
@@ -87,9 +87,9 @@ router.post("/login", async (req, res) => {
           usuario: {
             $eq: usuario,
           },
-          // sucursales: {
-          //   $eq: req.body.sucursales,
-          // },
+          sucursales: {
+            $eq: req.body.sucursal,
+          },
         },
       ],
     });
@@ -110,6 +110,7 @@ router.post("/login", async (req, res) => {
     let payload = jwt.verify(token, process.env.SECRET_JWT);
     payload.token = token;
     payload.nombre = usuarioFind.nombre;
+    payload.tipoUsuario = usuarioFind.tipoUsuario;
 
     res.status(201).header("authorization", token).send(payload);
     // res.status(201).send('');
