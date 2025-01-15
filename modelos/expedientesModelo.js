@@ -38,6 +38,11 @@ const expedientesShema = mongoose.Schema({
     type: String,
     default: "N/A",
   },
+  usuarios: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "usuarios",
+    required: true,
+  },
   recetaOjoDerecho: {
     esfera: {
       type: String,

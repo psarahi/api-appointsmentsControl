@@ -8,6 +8,7 @@ router.get("/", async (req, res) => {
     const expedientes = await Expediente.find()
       .populate("paciente")
       .populate("optometrista")
+      .populate("usuarios")
       .sort({ fechaRegistro: "desc" });
 
     res.send(expedientes);
@@ -52,8 +53,8 @@ router.get("/:_id", async (req, res) => {
   try {
     const expediente = await Expediente(req.params._id)
       .populate("paciente")
-      .populate("optometrista");
-
+      .populate("optometrista")
+      .populate("usuarios")
     res.send(expediente);
   } catch (error) {
     console.log(error);
@@ -69,6 +70,9 @@ router.get("/paciente/:_id", async (req, res) => {
     }).populate([
       {
         path: "paciente",
+      },
+      {
+        path: "usuarios"
       },
       {
         path: "optometrista",
@@ -95,6 +99,9 @@ router.get("/pacienteExpediente/:_id", async (req, res) => {
     }).populate([
       {
         path: "paciente",
+      },
+      {
+        path: "usuarios",
       },
       {
         path: "optometrista",
@@ -166,6 +173,7 @@ router.put("/:_id", async (req, res) => {
       }
     )
       .populate("paciente")
+      .populate("usuarios")
       .populate("optometrista");
 
     res.status(202).send(expediente);

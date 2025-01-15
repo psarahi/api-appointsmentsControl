@@ -29,11 +29,6 @@ const usuarioSchema = new mongoose.Schema({
       required: true,
     },
   ],
-  // sucursales: {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: 'sucursales',
-  //     required: true
-  // },
   fechaRegistro: {
     type: Date,
     default: dayjs().format("YYYY-MM-DD"),
