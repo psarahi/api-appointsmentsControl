@@ -77,8 +77,7 @@ router.post("/", async (req, res) => {
 
 // Login de usuario
 router.post("/login", async (req, res) => {
-  const { usuario, password, sucursal } = req.body;
-
+  const { usuario, password } = req.body;
   try {
     const usuarioFind = await Usuario.findOne({
       $and: [
@@ -88,7 +87,7 @@ router.post("/login", async (req, res) => {
             $eq: usuario,
           },
           sucursales: {
-            $eq: req.body.sucursal,
+            $in: [req.body.sucursal],
           },
         },
       ],
@@ -97,7 +96,6 @@ router.post("/login", async (req, res) => {
     if (!usuarioFind) {
       return res.status(404).send("No existe el usuario");
     }
-
     // Confirmar los passwords
     const validPassword = bcrypt.compareSync(password, usuarioFind.password);
 

@@ -163,10 +163,12 @@ router.get(
 );
 
 // Funcion get por paciente
-router.get("/pacientes", async (req, res) => {
+router.get("/pacientes/:sucursal", async (req, res) => {
   try {
     let ventaPaciente = [];
-    const detalles = await DetalleVenta.find()
+    const detalles = await DetalleVenta.find({
+      sucursales: req.params.sucursal
+    })
       //.select("paciente")
       .populate([
         {

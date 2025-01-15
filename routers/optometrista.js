@@ -15,6 +15,21 @@ router.get('/', async(req, res) => {
     }
 });
 
+// Funcion get todos
+router.get('/bySucursal/:sucursal', async(req, res) => {
+  try {
+      const optometristas = await Optometrista.find({
+        sucursales: req.params.sucursal
+      })
+      .populate('sucursales');
+
+      res.send(optometristas);
+  } catch (error) {
+      console.log(error);
+      res.status(404).send('No se encontro ningun documento');
+  }
+});
+
 // Funcion para agregar
 router.post('/', async (req, res) => {
     try {

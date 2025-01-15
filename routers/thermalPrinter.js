@@ -26,7 +26,7 @@ router.post("/imprimirFactura", async (req, res) => {
 
   let valorExento = 0.0;
   let valorGravado15 = 0.0;
-  let isv15 = 0.0;  
+  let isv15 = 0.0;
 
   const cai = fac[0].sucursales.cai;
   const nombreSucursales = fac[0].sucursales.nombre;
@@ -34,9 +34,13 @@ router.post("/imprimirFactura", async (req, res) => {
   const rtn = fac[0].sucursales.rtn;
   const tel = fac[0].sucursales.telefono;
   const cel = fac[0].sucursales.celular;
-  const direccion = fac[0].sucursales.direccion.toLocaleUpperCase();
+  const direccion = textValidator(fac[0].sucursales.direccion)
+    ? fac[0].sucursales.direccion.toLocaleUpperCase()
+    : "";
   const email = fac[0].sucursales.email.toLocaleUpperCase();
-  const mensajeFactura = fac[0].sucursales.mensajeFactura;
+  const mensajeFactura = textValidator(fac[0].sucursales.mensajeFactura)
+    ? fac[0].sucursales.mensajeFactura.toLocaleUpperCase()
+    : "";
   const fechaEmision = fac[0].fechaLimiteEmision;
   const cliente = !textValidator(req.body.rtn)
     ? req.body.cliente
@@ -134,7 +138,7 @@ router.post("/imprimirFactura", async (req, res) => {
     rango: rango,
     paginaDigital: "",
     sucursales: req.body.sucursales,
-    mensajeFactura: mensajeFactura.toLocaleUpperCase(),
+    mensajeFactura: mensajeFactura,
   };
 
   if (printerClients.length === 0) {
