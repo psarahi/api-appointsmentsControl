@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
     res.send(factura);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -271,7 +271,7 @@ router.put("/imprimirFactura", async (req, res) => {
     res.send("print");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -374,7 +374,7 @@ router.put("/imprimirRecibo", async (req, res) => {
     res.send("print");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se pudo imprimir");
+    res.status(500).send("No se pudo imprimir");
   }
 });
 
@@ -389,7 +389,7 @@ router.get("/bySucursal/:sucursal", async (req, res) => {
     res.send(factura);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -426,7 +426,7 @@ router.get("/facturaRecibo/:sucursal", async (req, res) => {
     res.send(numCorrelativo);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -446,7 +446,7 @@ router.get("/rangoActivo/:sucursal", async (req, res) => {
     res.send(factura);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -460,7 +460,7 @@ router.get("/:_id", async (req, res) => {
     res.send(factura);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -472,7 +472,7 @@ router.post("/", async (req, res) => {
     res.status(201).send(result);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se pudo registrar el documento");
+    res.status(500).send("No se pudo registrar el documento");
   }
 });
 
@@ -493,7 +493,7 @@ router.put("/actualizarInventario", async (req, res) => {
     res.status(202).send("Inventario actualizado");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 // Funcion PUT
@@ -505,7 +505,7 @@ router.put("/:_id", async (req, res) => {
     res.status(202).send(factura);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -534,7 +534,7 @@ router.put("/cambiarEstado/:_id", async (req, res) => {
     res.status(200).send(facturaSave);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -558,7 +558,7 @@ router.delete("/:_id", async (req, res) => {
     res.status(200).send("Registro borrado");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 

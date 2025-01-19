@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
     res.send(pacientes);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontraron pacientes");
+    res.status(500).send("No se encontraron pacientes");
   }
 });
 
@@ -28,7 +28,7 @@ router.get("/bySucursal/:sucursales", async (req, res) => {
     res.send(pacientes);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontraron pacientes");
+    res.status(500).send("No se encontraron pacientes");
   }
 });
 // Funcion get por _id unico
@@ -41,7 +41,7 @@ router.get("/:_id", async (req, res) => {
     res.send(paciente);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
     res.status(201).send(pacienteSave);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se pudo registrar el documento");
+    res.status(500).send("No se pudo registrar el documento");
   }
 });
 
@@ -72,7 +72,7 @@ router.post("/multipleSave", async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se pudo registrar el documento");
+    res.status(500).send("No se pudo registrar el documento");
   }
 });
 
@@ -90,7 +90,7 @@ router.put("/:_id", async (req, res) => {
     res.status(202).send(paciente);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -119,7 +119,7 @@ router.put("/cambiarEstado/:_id", async (req, res) => {
     res.status(200).send(pacienteSave);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -143,7 +143,7 @@ router.delete("/:_id", async (req, res) => {
     res.status(200).send("Paciente borrado");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 

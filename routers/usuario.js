@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
     res.send(usuarios);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -27,7 +27,7 @@ router.get("/activo", async (req, res) => {
     res.send(usuarios);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -41,7 +41,7 @@ router.get("/:_id", async (req, res) => {
     res.send(usuario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -71,7 +71,7 @@ router.post("/", async (req, res) => {
     res.status(201).header("authorization", jwtToken).send(usuarioResult);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se pudo registrar el documento");
+    res.status(500).send("No se pudo registrar el documento");
   }
 });
 
@@ -130,7 +130,7 @@ router.put("/:_id", async (req, res) => {
     res.status(202).send(usuario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -151,7 +151,7 @@ router.put("/changePass/:_id", async (req, res) => {
     res.status(202).send(usuario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -183,7 +183,7 @@ router.put("/cambiarEstado/:_id", async (req, res) => {
     res.status(202).send(usuarioUpdate);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -194,7 +194,7 @@ router.delete("/:_id", async (req, res) => {
     res.status(200).send("usuario borrada");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 

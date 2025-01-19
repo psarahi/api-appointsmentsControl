@@ -38,6 +38,10 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.use("", inicio);
 app.use("/api/sucursal", sucursal);
 app.use("/api/usuario", usuario);

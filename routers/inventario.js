@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
     res.send(inventario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -26,7 +26,7 @@ router.get("/bySucursal/:sucursal", async (req, res) => {
     res.send(inventario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -46,7 +46,7 @@ router.get("/activos/:sucursal", async (req, res) => {
     res.send(inventario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -59,7 +59,7 @@ router.get("/inventarioExistente", async (req, res) => {
     res.send(inventario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -71,7 +71,7 @@ router.get("/:_id", async (req, res) => {
     res.send(inventario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
     res.status(201).send(result);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se pudo registrar el documento");
+    res.status(500).send("No se pudo registrar el documento");
   }
 });
 
@@ -104,7 +104,7 @@ router.put("/actualizarInventario", async (req, res) => {
     res.status(202).send("Inventario actualizado");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 // Funcion PUT
@@ -118,7 +118,7 @@ router.put("/:_id", async (req, res) => {
     res.status(202).send(inventario);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -147,7 +147,7 @@ router.put("/cambiarEstado/:_id", async (req, res) => {
     res.status(200).send(invSave);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -171,7 +171,7 @@ router.delete("/:_id", async (req, res) => {
     res.status(200).send("Registro borrado");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 

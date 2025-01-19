@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
     res.send(expedientes);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontraron expedientes");
+    res.status(500).send("No se encontraron expedientes");
   }
 });
 
@@ -44,7 +44,7 @@ router.get("/pacientes", async (req, res) => {
     res.status(200).send(pacientes);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -58,7 +58,7 @@ router.get("/:_id", async (req, res) => {
     res.send(expediente);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -87,7 +87,7 @@ router.get("/paciente/:_id", async (req, res) => {
     res.send(expediente);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -141,7 +141,7 @@ router.get("/pacienteExpediente/:_id", async (req, res) => {
     res.send(detalles);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -158,7 +158,7 @@ router.post("/", async (req, res) => {
     res.status(201).send(pacienteSave);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se pudo registrar el documento");
+    res.status(500).send("No se pudo registrar el documento");
   }
 });
 
@@ -179,7 +179,7 @@ router.put("/:_id", async (req, res) => {
     res.status(202).send(expediente);
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
@@ -203,17 +203,7 @@ router.delete("/:_id", async (req, res) => {
     res.status(200).send("Paciente borrado");
   } catch (error) {
     console.log(error);
-    res.status(404).send("No se encontro ningun documento");
-  }
-});
-
-
-router.post("/enviarMessage", async (req, res) => {
-  try {
-
-  } catch (error) {
-    console.log(error);
-    res.status(404).send("No se encontraron expedientes");
+    res.status(500).send("No se encontro ningun documento");
   }
 });
 
