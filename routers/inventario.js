@@ -21,7 +21,7 @@ router.get("/bySucursal/:sucursal", async (req, res) => {
     const inventario = await Inventario.find({
       sucursales: {
         $eq: req.params.sucursal,
-      }
+      },
     });
     res.send(inventario);
   } catch (error) {
@@ -80,6 +80,20 @@ router.post("/", async (req, res) => {
   try {
     const inventario = new Inventario(req.body);
     const result = await inventario.save();
+    res.status(201).send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("No se pudo registrar el documento");
+  }
+});
+
+// Funcion para agregar multiples
+router.post("/multipleSave", async (req, res) => {
+  try {
+    let invList = await req.body;
+    const result = await Inventario.insertMany(invList).then((response) => {
+      res.status(201).send(response);
+    });
     res.status(201).send(result);
   } catch (error) {
     console.log(error);
