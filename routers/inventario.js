@@ -1,5 +1,6 @@
 const express = require("express");
 const Inventario = require("../modelos/InventarioModelo");
+const DetalleVenta = require("../modelos/detalleVentaModelo");
 const router = express.Router();
 
 // Funcion get todos
@@ -165,6 +166,34 @@ router.put("/cambiarEstado/:_id", async (req, res) => {
   }
 });
 
+// Funcion DELETE many
+router.delete("/deleteMany/:desc", async (req, res) => {
+  try {
+    console.log(req.params.desc);
+
+    const inventario = await Inventario.find({
+      descripcion: req.params.desc
+    });
+
+    console.log(inventario.length);
+
+    if (!inventario) {
+      return res
+        .status(404)
+        .send("No se encontro ningun documento para borrar");
+    }
+
+    await Inventario.deleteMany({
+      descripcion: req.params.desc
+    });
+
+    res.status(200).send(`${inventario.length} eliminados`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("No se encontro ningun documento");
+  }
+});
+
 // Funcion DELETE
 router.delete("/:_id", async (req, res) => {
   try {
@@ -173,6 +202,17 @@ router.delete("/:_id", async (req, res) => {
         .status(404)
         .send("El id no contiene el numero correcto de digitos");
     }
+
+    const detalleVenta = await DetalleVenta.find({
+      detalleInventario: {
+        $elemMatch: { inventario: req.params._id },
+      },
+    });
+    console.log(detalleVenta);
+    if (detalleVenta.length > 0) {
+      return res.status(500).send("No se puede eliminar existe una venta");
+    }
+
     const inventario = await Inventario.findById(req.params._id);
 
     if (!inventario) {
