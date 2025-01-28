@@ -23,6 +23,7 @@ const detalleVentas = require("./routers/detalleVenta");
 const facturas = require("./routers/facturas");
 const correlativos = require("./routers/correlativos");
 const thermalPrinter = require("./routers/thermalPrinter");
+const cliente = require("./routers/cliente");
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -53,6 +54,7 @@ app.use("/api/detalleVentas", detalleVentas);
 app.use("/api/facturas", facturas);
 app.use("/api/correlativo", correlativos);
 app.use("/api/thermalPrinter", thermalPrinter);
+app.use("/api/cliente", cliente);
 
 const port = process.env.API_PORT || 3003;
 

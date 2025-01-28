@@ -117,8 +117,8 @@ router.post("/multipleSave", async (req, res) => {
 // Funcion PUT
 router.put("/actualizarInventario", async (req, res) => {
   try {
-    req.body.detalleInventario.forEach(async (element) => {
-      if (textValidator(element.linea)) {
+    req.body.detalleInventario.forEach(async (element) => {      
+      if (element.categoria != "LENTES") {
         await Inventario.updateOne(
           { _id: element.inventario },
           {
@@ -139,7 +139,7 @@ router.put("/actualizarInventario", async (req, res) => {
 router.put("/actualizarInvLente", async (req, res) => {
   try {
     req.body.detalleInventario.forEach(async (element) => {
-      if (element.inventario.linea == "" && element.inventario.existencia > 0) {
+      if (element.inventario.categoria == "LENTES" && element.inventario.existencia > 0) {
         await Inventario.updateOne(
           { _id: element.inventario._id },
           {

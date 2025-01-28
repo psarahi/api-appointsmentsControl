@@ -12,15 +12,24 @@ const clienteShema = new mongoose.Schema({
     telefono: {
         type: String,
     },
+    direccion: {
+        type: String,
+    },
     sucursales: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Sucursales',
+        ref: 'sucursales',
         required: true,
     },
     fechaRegistro: {
         type: Date,
         default: dayjs().format('YYYY-MM-DD'),
-    }
+    },
+    estado: {
+        type: Boolean,
+        default: true,
+    },
 })
 
-export const Cliente = mongoose.model('cliente', clienteShema);
+const Cliente = mongoose.model('cliente', clienteShema);
+
+module.exports = Cliente;
