@@ -32,6 +32,37 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+// Funcion get Filters
+router.get("/anyFilter/:dato", async (req, res) => {
+  try {
+    const detalles = await DetalleVenta.find({
+      paciente: req.params.dato
+    }).populate([
+      {
+        path: "detalleInventario.inventario",
+        select: "descripcion precioVenta precioCompra moda",
+      },
+      {
+        path: "detallePagos.usuarios",
+      },
+      {
+        path: "paciente",
+        select: "nombre",
+      },
+      {
+        path: "sucursales",
+        select: "nombre",
+      },
+    ]);
+
+    res.status(200).send(detalles);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("No se encontro ningun documento");
+  }
+});
+
 // Funcion get todos
 router.get(
   "/reporteVentas/:sucursal/:fechaInicial/:fechaFinal",
