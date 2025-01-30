@@ -65,7 +65,11 @@ server.listen(port, () => console.log("Escuchando Puerto: " + port));
 mongoose
   .connect(
     // `mongodb+srv://lesly:${process.env.MONGOPASS_ATLAS}@cluster0.g3yej.mongodb.net/appointmentsControl?retryWrites=true&w=majority&appName=Cluster0`
-    `${process.env.STRING_CONNECT}://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.CLUSTER_NAME}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}?authSource=admin`
+    `${process.env.STRING_CONNECT}://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.CLUSTER_NAME}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority&authSource=admin`,
+    {
+      serverSelectionTimeoutMS: 10000,
+      maxPoolSize: 10
+    }
   )
   .then(() => console.log("Conectado a MongoDb"))
   .catch((error) => console.log(error));

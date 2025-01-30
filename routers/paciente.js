@@ -15,6 +15,22 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+router.get("/anyFilter/:dato", async (req, res) => {
+  try {
+    const pacientes = await Paciente.find({
+      nombre: { $regex: req.params.dato, $options: "i" }
+    })
+      .populate("sucursales")
+      .sort({ fechaRegistro: "desc" });
+
+    res.send(pacientes);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("No se encontraron pacientes");
+  }
+});
+
 router.get("/bySucursal/:sucursales", async (req, res) => {
   try {
     const pacientes = await Paciente.find({

@@ -2,12 +2,6 @@ const mongoose = require("mongoose");
 const dayjs = require("dayjs");
 
 const clienteShema = new mongoose.Schema({
-  rtn: {
-    type: String,
-  },
-  nombreRtn: {
-    type: String,
-  },
   sucursales: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "sucursales",

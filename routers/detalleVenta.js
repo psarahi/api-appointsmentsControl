@@ -126,7 +126,7 @@ router.get(
             path: "detallePagos.usuarios",
           },
         ])
-        .sort({ fecha: -1 });
+        .sort({ fecha: -1 });        
 
       detalles.forEach((detalle) => {
         detalle.detalleInventario.forEach((detalleInventario) => {
@@ -137,6 +137,7 @@ router.get(
               cilindro: detalleInventario.inventario.cilindro,
               adicion: detalleInventario.inventario.adicion,
               tipoVenta: detalle.tipoVenta,
+              numFacRec: detalle.numFacRec,
               fecha: dayjs(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
               cantidad: detalleInventario.cantidad,
               linea: detalleInventario.inventario.linea,
@@ -160,6 +161,7 @@ router.get(
               cilindro: detalleInventario.inventario.cilindro,
               adicion: detalleInventario.inventario.adicion,
               tipoVenta: detalle.tipoVenta,
+              numFacRec: detalle.numFacRec,
               fecha: dayjs(detalle.fecha).add(6, "hour").format("YYYY-MM-DD"),
               cantidad: detalleInventario.cantidad,
               linea: detalleInventario.inventario.linea,
@@ -178,8 +180,10 @@ router.get(
             });
           }
         });
-      });
-
+      });  
+      const totalCantidad = invExistente.reduce((total, inv) => total + inv.cantidad, 0);
+      console.log(totalCantidad);
+      
       const datoInventario = {
         invExistente,
         invPedido,

@@ -14,6 +14,17 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Funcion get todos
+router.get("/:id", async (req, res) => {
+  try {
+    const sucursales = await Sucursal.findById(req.params.id);
+    res.send(sucursales);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("No se encontro ningun documento");
+  }
+});
+
 // Get sucursales y usuarios
 router.get("/sucusalesUsuarios", async (req, res) => {
   try {
